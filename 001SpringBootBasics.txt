@@ -1,0 +1,623 @@
+SpringBoot Rest API development basics
+========================
+
+1. Create a simple spring boot rest API using a @RestController and @GetMapping annotations.
+2. create a Spring boot rest API that returns Java Bean as a JSON to the client.
+3. create a Spring boot Rest API that returns a List as a JSON to the client.
+4. create a Spring boot rest API with @PathVariable annotation.
+5. create a Spring boot API with @RequestParam annotation.
+6. create a Spring boot post API using @PostMapping and @RequestBody annotations.
+7. create a Spring boot put rest API using @PutMapping and @RequestBody annotations.
+8. create a Spring boot delete rest API using @DeleteMapping annotation.
+9. use a ResponseEntity class to manipulate the HTTP response.
+So this ResponseEntity class is very important to create a response for the rest API.
+10. define a base URL for APIs in a Spring MVC controller using @RequestMapping
+annotation.
+So basically we want to take a look into all these important spring MVC annotations that are required
+to develop Spring boot rest APIs.
+
+
+
+8. Create and set up spring boot project in IntelliJ IDEA
+====================================
+we'll create a Spring Boot project using spring initializr and then we'll import that
+project in IntelliJ idea.
+gOTO  start.spring.io
+This will bring up Spring Initializr.
+Well, Spring Initializr is a website or a web tool that we can use to quickly create and bootstrap spring
+based applications.
+Now, let's go and let's fill up the project information over here.
+Well, here we have two types of projects, the Maven project, and the Gradle Project.
+We're going to use the Maven project, so let's keep Maven project as selected over here.
+And here we have three kinds of JVM languages Java, Kotlin, and Groovy. We are going to use Java.
+So let's keep Java as selected over here.
+Next, we are going to use Spring Boot Version three.
+So let's select Spring Boot 3.0.0 Milestone four.
+So this is the latest version of spring
+boot as of now. Next, let's fill up the project metadata over here.
+So let's give a group as sk.microservices
+Well, you can go any group that you want.
+Next, artifact let's give
+Artifact as springboot-rest-api.
+Next, let's give project name as springboot-rest-api and then description demo project for Spring Boot
+rest API and then packaging name as sk.microservices.springboot and then packaging as a jar and then Java version
+17. Well, remember whenever you choose Spring Boot version three, then you have to choose Java version 17
+or later.
+Next, let's go ahead and let's select the dependencies.
+We'll go ahead and click on add dependency over here and here, just type web.
+Well, Spring Boot provides Spring web dependency that we can use to develop the RESTFul Web services.
+And this dependency internally provides Apache Tomcat as a default embedded container so that we can
+able to run our Spring Boot application in a development environment.
+All right, so let's go and let's select spring web starter dependency.
+Well, as of
+now let's keep this single spring web starter dependency.
+If any dependency is required, we'll add in upcoming lectures.
+Usually we add Spring Data JPA, MySQL Driver, Lombok
+
+Next, let's go ahead and click on Generate Button to generate this spring boot project as a zip file
+on the local machine and you can able to see here our Spring Boot application is downloaded as a zip file
+
+let's unzip this folder.
+All right, now we have springboot-rest-api project in place.
+Next, we're going to import this project in IntelliJ idea.
+Let's open IntelliJ idea
+and in IntelliJ, you can see a couple of options New Project, Open
+Click on open in IntelliJ idea, and select the springboot-rest-api folder.
+Now, this will open Spring Boot project in IntelliJ Idea.
+
+
+Next, if you can see the src folder within that, we have the main folder and within the main folder
+we have Java and resources.
+Within the Java folder, we keep all the development-related source code and within a resource folder,
+we keep all the static resources in static folder as well as UI-related resources  in templates folder and all the application-level configuration in application.properties file.
+And here we have a test folder.
+Within that we keep all the test cases.
+Next, we have pom.xml file.
+It contains all the Maven Dependencies and Maven plugins.
+Now, let's go ahead and let's explore more about this Spring Boot starter Web Dependency.
+<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		
+Well, Spring Boot provides spring boot starter web dependency to develop the restful web services as
+well as spring
+MVC web applications and this spring boot starter web dependency internally provides all the required dependencies to develop restful web services.
+Along with that, this dependency also provides Apache Tomcat as an embedded default container.
+For example, if we dive into this dependency,
+
+click on control button and hover over org.springframework.boot to click on it.
+
+this dependency internally provides Spring Boot starter JSON
+dependency, Spring Boot starter Tomcat dependency.
+Okay.
+Apart from that, it will provide all the spring related dependencies like spring web dependency, spring
+web mvc dependency.
+It means that this single dependency will gather all the required dependencies to develop the spring
+restful web services.
+Along with that, it will also provide a default embedded Tomcat server.
+We don't have to configure the external Tomcat server to deploy our Spring Boot application.
+This dependency internally provides an embedded Tomcat server so that we can quickly deploy our Spring Boot
+application in our local development environment.
+
+Now, let's go, and let's quickly run our Spring Boot application and let's see how it works.
+So go to the main entry point class.
+E:\MicroServices\springboot-rest-api\src\main\java\sk\microservices\springboot\SpringbootRestApiApplication.java
+
+So this is basically our spring boot main entry point class.
+It has a main method.
+All right.
+So typically in Java programs, we have a main method and the execution of the Java program starts from
+main method,
+So similarly in Spring Boot, we have a main method and the execution of the Spring Boot application
+starts from here.
+So we can simply use this main method to start our Spring Boot application.
+So go ahead and run the Spring Boot application by running this E:\MicroServices\springboot-rest-api\src\main\java\sk\microservices\springboot\SpringbootRestApiApplication.java.
+Notice here in a console that our Spring Boot application is up and running in an embedded Tomcat server on
+Port 8080.
+
+in resources/application.properties add
+server.port = 8090
+to configure the port
+and run E:\MicroServices\springboot-rest-api\src\main\java\sk\microservices\springboot\SpringbootRestApiApplication.java
+
+
+
+9. we'll create a simple Spring Boot Hello World Rest API.
+===========================
+
+Create a Controller package and create HelloWorldController Class with @Controller and @ResponseBody annotations.
+
+
+We use @Controller annotation to make this controller class as Spring MVC controller
+@ResponseBody annotation tells a controller that the object returned is automatically serialized into JSON and passed back into HttpResponse Object.
+
+
+whenever we develop the restful web services using spring MVC, we have
+to create a controller class and we have to annotate this controller class with these two annotations.
+Spring team thought like why not we create a shortcut single annotation that these two annotations
+So spring team released @RestController annotation
+It internally uses these two annotations.
+For example, let me remove these two annotations and here let me use @RestController annotation over here.
+
+
+10. SpringBoot REST API returns Java Bean
+========================
+
+So in this lecture, we will see how to create a simple Spring Boot API that returns a java bean as
+JSON to the client.
+So first step is we need to create a Java bean class.
+So go to main package and let's quickly create a new package and let's call it as bean.
+Within a bean package,
+Let's create a Java class, let's call it as Student and let's go ahead and let's define instance variables
+for this Student class.
+private string firstName
+private string lastName
+private int ID.
+
+By looking at pom.xml in Todomanagement Application
+i have added lombok dependencies 
+just search for lombok in todomanagement application/pom.xml
+
+added
+@AllArgsConstructor
+@Getter
+@Setter
+Now, we have created a Student as a Java bean, and whenever we develop the API, we use this Student
+Java bean as a response and then spring will convert this Java bean object to
+JSON and it will send that JSON back to the client.
+So this is the first step that is we have created a Student Java Bean.
+Second step is we need to create a spring MVC controller.
+ controller name as StudentController and let's go and let's annotate this class with @RestController
+annotation to make this class as a spring MVC REST controller.
+ We are creating REST API using Spring Boot is very simple.
+We just have to create a Java method and we need to annotate that Java method with the spring annotations.
+@GetMapping("student")
+All right.
+So here within a StudentController, let's create a Java method first.
+Let's type public and let's give return type of the method as Student and let's use method name as
+getStudent and then let's create a Student object.
+
+test - http://localhost:8090/student
+{"id":1,"firstName":"sai","lastName":"krishna"}
+The client got a response in JSON format.
+All right, so this is how we develop the Spring Boot API that returns Java bean as a JSON to the client.
+All right, perfect.
+Now, let me recap what we have done in this lecture.
+First, we have created Student Java bean class.
+Next, we have created StudentController.
+And within a StudentController, we have created a API that returns a Student object as JSON to
+the client.
+
+11. Spring Boot REST API returns list
+=================
+
+in StudentController add a method getStudents
+
+
+12. Create Spring Boot REST API with Path variable
+====================
+//{id} - is called URI template variable
+    // @PathVariable annotation is used on method argument to bind it to 
+    // the value of the URI template variable
+    //http://localhost:8090/students/1
+    /*@GetMapping("students/{id}")
+    public Student studentPathVariable(@PathVariable int id){
+            return new Student(id,"Sai","krishna");
+        }
+
+    both variables names are same or
+     */
+    @GetMapping("students/{id}")
+    public Student studentPathVariable(@PathVariable("id") int studentId){
+        return new Student(studentId,"Sai","krishna");
+
+    }
+	
+	
+	
+13. Spring Boot REST API with Request Param - @RequestParam
+===========================
+studentRequestVariableIN StudentController.java
+
+ we'll see how to use @RequestParam annotation to extract query parameters from
+the request URL.
+
+Consider in a request url something like this http://localhost:8090/students?id=1and then ?id =1 is called a query parameter.
+changed to http://localhost:8090/students/query?id=1
+
+
+So let's use URL something like this students/query. Well, /students
+we have configured for other REST API already
+So the REST API should have the unique URL
+that's why I'm using query over here and here also we need to pass /query
+this URL great.
+
+http://localhost:8090/students/query?id=1
+
+Now, whenever our client sends a request with a URL like this, then we need to get the query parameter
+from the URL by using @RequestParam annotation.
+So basically we need to bind the value of this query parameter to this method argument.
+And in order to do that we can use @RequestParam annotation.
+Perfect.
+
+
+Create one more GetMappping method with method overloading ...but the url should be unique
+http://localhost:8090/students/query2?id=1&firstName=sai
+
+made query2 instead of query
+
+
+
+what is the difference between @PathVariable annotation and @RequestParam annotation?
+======================
+Well, @PathVariable annotation is used to bind the value of URI template variable into method
+argument and we use @RequestParam annotation to extract the value of query parameters in a request
+URL.
+
+
+
+
+14. Spring Boot POST REST API - @PostMapping and @RequestBody
+=============================
+
+In this lecture, we'll create a Spring boot REST API that handles HTTP POST request.
+For example, consider we are using Postman Client as a client to make the rest API call and whenever
+a client make a HTTP post request, then client have to send a data in a request body.
+
+
+So let's go ahead and let's write the Spring boot REST API that will handle this kind of post request and
+extract the JSON data from the request body.
+So let me go to an IntelliJ idea here and here, go to StudentController and Let's say Spring Boot Rest API that handles HTTP post request.
+two important annotation.
+One is @PostMapping annotation, and second one is @RequestBody annotation.
+
+give method name as createStudent. Next, let's pass student as a method argument perfect.
+And within the createStudent method we want to print the student data.
+
+
+let's make this createStudent method as a rest API by using @PostMapping annotation.
+Well, here we are using @PostMapping annotation to map incoming HTTP POST to request to this method.
+Well, @RequestBody annotation is responsible to retrieve a JSON object from this request and it will automatically convert that JSON object into Java object.
+In our case, student is the Java object.
+For example, if we look at the postman client over here, postman client will basically send
+a HTTP post request.
+It contains a JSON in a request body and now we are using @RequestBody annotation
+It will convert this JSON into java object.
+
+@RequestBody annotation internal uses spring provided HTTPMessageConverter to convert a JSON into java object.
+
+
+We use @PostMapping annotation to map incoming HTTP post request to this method and @RequestBody annotation
+is responsible to retrieve a JSON from the request body and it will automatically convert that JSON
+into Java object and @RequestBody annotation
+It in general uses spring provided HTTP message converters to automatically convert a JSON into Java
+object.
+
+
+
+
+Well, here I have open the postman client and I'm going to create a new request.
+
+curl --location 'http://localhost:8090/students/create' \
+--header 'Content-Type: application/json' \
+--data '{
+    "id": 3,
+    "firstName" : "sai",
+    "lastName" : "krishna"
+}'
+
+
+response :
+200 status ok
+{
+    "id": 3,
+    "firstName": "sai",
+    "lastName": "krishna"
+}
+
+
+So whenever a client sends a a request body that contains JSON, we are basically binding to this student object,
+That's why the student fields and JSON attributes should be same.
+So whenever you send a JSON in a request body, make sure that the attributes of the JSON and the fields
+of the model class should be same.
+
+
+And notice here there is HTTP status that is 200.
+Okay, well, if our REST API don't return any status code, then by default spring will send a http
+status code as a 200.
+
+
+
+
+But here we have created the API that creates the new resource
+hence this page should return http status code 201 created.
+Well, in order to send a HTTP status in response, we can use @ResponseStatus annotation.
+@ResponseStatus(HttpStatus.CREATED)
+
+rerun and test 
+response from api is same with status code 201, CREATED
+
+Well, we can also use ResponseEntity class to create the response for the API.
+instead of returning the Student object return a ResponseEntity object, which we will see later.
+
+
+Well, remember, whenever you create a Spring boot REST API that handles HTTP Post request, then you should
+return a status code 201 created and you have to use @PostMapping annotation to map incoming http
+post request to this method and you have to use @RequestBody annotation to extract JSON from
+the request and convert a JSON into Java object.
+Well, in real time project this API used to save this student object into database.
+But for this example, we have printed this student object into a console.
+For example, you can see student ID, first name and last name, but in real time project make sure that
+you save this student object into database and return that same student object to the client.
+
+
+
+15. Spring Boot PUT REST API - @PutMapping and @RequestBody
+==============================
+client sends PUT request to update the existing resource.
+For example, consider we are using POSTman client as a client to make the REST API call, and whenever a
+client make a HTTP PUT request, the client have to select the HTTP PUT method over here.
+And if we look at the URL http://localhost:8080/students/studentID and then operation that is update operation.
+And whenever a client make HTTP request then client have to send the data in a request.
+For example,  client sending student first name, last name it means client want
+to update the existing student's first name and last name.
+So whenever a client want to make a HTTP PUT request, then client will send the resource ID in a
+URL and the information, the update information in a request body.
+
+Now, we're going to write Spring Boot REST API that will handle this HTTP request and our REST API will basically
+extract this JSON from the request body and it will update the existing student.
+
+
+    public Student updateStudent(@RequestBody Student student, @PathVariable int studentId){
+
+
+Put request is for Updating existing resource, and this POST request is basically for creating new resource.
+
+Well, in real time project we save this updated student information into a database, but for this
+example, we are simply printing the student information to the console and we are returning the same
+student to the client.
+ we use
+@PutMapping annotation to map incoming HTTP PUT request to this method.
+ let's configure the URL for this API as  (students/{id}/update).
+And if we can notice here we're using URI template variable and in order to bind the value of this,
+URI template variable into a method argument we have to use @PathVariable annotation.
+
+the PUT http request contains the JSON in a request body,
+So in order to convert this JSON into java object, we have to use @RequestBody annotation.
+So @RequestBody annotation will basically extract the JSON from the HTTP request and it will automatically
+convert that JSON into Java object.
+
+Notice here the URI template variable is ID and the method argument is student ID
+so both the variables are different.
+Hence we need to pass a URI template variable name to this @PathVariable annotation.
+ @PathVariable("id") int studentId
+ 
+If both variables are same, then we no need to pass this id to the @PathVariable annotation.
+
+what is the status code that this API have to return to the client
+Well, typically the update API should return a status code 200 OK to the client.
+And if we don't specify any status code in our API, then the rest API will by default
+return http status code 200
+
+request : 
+curl --location --request PUT 'http://localhost:8090/students/1/update' \
+--header 'Content-Type: application/json' \
+--data '{
+    "firstName" : "sai",
+    "lastName" : "krishna"
+}'
+
+
+Response :
+200 OK 
+{
+    "id": 0,
+    "firstName": "sai",
+    "lastName": "krishna"
+}
+
+
+
+16. Spring Boot DELETE REST API - @DeleteMapping
+=====================================
+client sends this HTTP delete request to delete the existing resource.
+
+whenever a client make an HTTP delete request, then client has to send a delete HTTP method in a request
+and URL For example, http://localhost:8080/students/1/delete
+delete operation.
+So typically we use this kind of URL and client don't have to send any data in the request body in case of HTTP delete request.
+
+let's return a success message in the response.
+For example, let's say student deleted successfully.
+Well, we use add delete mapping annotation to map incoming HTTP delete request to this method.
+let's configure the URL for this rest API as students/{id}/delete
+So this is the delete rest API.
+And if we can notice in the URL, we have a URI template variable that is ID..
+We need to bind the value of this URI template variable to this method argument  by using  @PathVariable annotation.
+if we can see the UI template variable name and the method argument name
+both are different
+hence we need to pass a template variable to the @PathVariable annotation
+
+@DeleteMapping("students/{id}/delete")
+    public String deleteStudent(@PathVariable("id") int studentId){
+    
+
+
+
+curl --location --request DELETE 'http://localhost:8090/students/1/delete'
+
+response: 
+200 ok
+deleted successfully
+So if you can see here our spring boot application is up and running in Embedded Tomcat Server on Port
+8080.
+ , let's go ahead and let's head our to the postman client and let's create a new request to call the
+Delete Rest API.
+So here let's choose a delete HTTP method and just type the URL
+http://localhost:8080/students/1/delete
+Well, in case of http delete request, a client don't have to send a data in a body.
+ 
+client got a success
+response that is student deleted successfully.
+And if we can notice here the HTTP status code 200.
+Well, remember whenever you develop the Spring Boot REST API that handles HTTP delete request, then this
+REST API have to return as HTTP status code 200 in a response
+and you don't have to manually specify the HTTP status for 200.
+
+
+
+17. Using Spring ResponseEntity class to Manipulate the HTTP Response
+=================================================
+
+we'll see how to use a ResponseEntity class to manipulate this HTTP response.
+, ResponseEntity class is very useful class to create a complete HTTP response for our Spring boot
+Rest API.
+ , ResponseEntity represents a whole HTTP response like status code, headers and body.
+As a result, we can use it to fully configure the HTTP response. ResponseEntity
+class is basically handy and most of the developers prefer using ResponseEntity class to create a response
+for the rest API.  ,
+
+ using ResponseEntity class in REST API is very simple.
+Our API have to return an instance of ResponseEntity class and spring will take care of rest of the
+things like Spring will write the instance of this ResponseEntity class to the HTTP response object.
+
+And ResponseEntity class is generic, So we can use any type as the response body.
+
+So let me go to an IntelliJ idea over here and let me change the response of the rest API.
+make changes to     public Student getStudent(){
+to return ResponseEntity class instance
+
+//17. Using Spring ResponseEntity class to Manipulate the HTTP Response
+    //http:localhost:8090/student
+    @GetMapping("student")
+    public ResponseEntity<Student> getStudent(){
+        Student student = new Student(1,"sai","krishna");
+
+        return new ResponseEntity<Student>(student,HttpStatus.OK);
+    }
+	
+	
+
+Notice here, without using ResponseEntity class, this REST API works perfectly because this API returns
+HTTP status 200 OK to the client.
+
+
+curl --location 'http://localhost:8090/student'
+
+same reponse as earlier :
+200 OK 
+{
+    "id": 1,
+    "firstName": "sai",
+    "lastName": "krishna"
+}
+
+
+So this is  we use a ResponseEntity class to configure response for the rest API.
+And if you can notice here we have created object of ResponseEntity class, but most of the rest API
+return status code 200 OK
+that's why this ResponseEntity class provide one static method that is ok() method
+
+
+        return ResponseEntity.ok(student);
+
+So both the statements are same.
+So in this case we are using ok() method and by default this okay method returns HTTP status code 200.
+
+
+
+how to pass header in a HTTP response using this ResponseEntity class.
+============================
+
+So here let's call ok() method
+and if you can notice here we have overloaded ok() method, 
+first ok() method takes body 
+but second ok() method doesn't take any parameter.
+So let's call a second
+ok() method over here and then it has a header() method.
+
+public static ResponseEntity.BodyBuilder ok()
+
+  
+So basically, ok() method returns a builder for example, you can see BodyBuilder.
+ok() method basically returns a BodyBuilder class and then BodyBuilder has a header() method
+
+And let's pass a value to this header.
+So we basically need to pass key-value pair.
+So let me pass something like customheaderAbcd and value "sfd"
+Next call body and pass student in a body
+
+
+        return ResponseEntity.ok().header("custom-headerAbcd","value1234")
+                .body(student);
+
+This is how we can add a custom header to the HTTP response using ResponseEntity class. 
+
+
+
+test:
+
+curl --location 'http://localhost:8091/student'
+
+
+response : {
+    "id": 1,
+    "firstName": "sai",
+    "lastName": "krishna"
+}
+
+status : 200 OK
+
+in postman at body dropdown select headers to see header values
+there is a key value for 
+custom-headerAbcd with value value1234
+
+So this is how we use a ResponseEntity class to pass a complete HTTP response like status code,
+body and header in a response.
+
+
+so this is how we can use ResponseEntity class to create a response for this API.
+
+    public Student createStudent(@RequestBody Student student){
+    
+	public ResponseEntity<Student> createStudent(@RequestBody Student student) {
+
+So here let's return ResponseEntity and just pass Student as a type.
+Next, instead of returning the student object, we have to return the ResponseEntity object
+ , notice here we are not using ResponseEntity.ok() method over here because ok() method returns
+Status status code 200 OK.
+But this REST API have to return HTTP status code 201 created.
+And notice here we are explicitly passing a HTTP status code 201 created to ResponseEntity class.
+Hence, we don't have to use @ResponseStatus annotation, we're simply comment it out. Actually,
+these are different ways we can configure the HTTP response for the rest API.
+
+
+
+18. Define Base URL for REST API’s in Spring MVC Controller - @RequestMapping
+============================
+
+In this lecture, we'll see how to define Base URL for REST API's
+In Spring MVC controller.
+Well, we can use @RequestMapping annotation at a class level to configure the Base URL for
+REST API's in a Spring MVC controller. For example,
+If you go to an IntelliJ idea, we have StudentController.
+Well, within a StudentController, if you can notice here, almost all the API's has same base URL
+students
+So instead of repeating the same base URL in each and every rest API, why not
+we can keep it in a single place.
+Simply add @RequestMapping("students") annotation above class definition to define a base URL
+for all the APIs.
+And next, let's remove students from each and every REST API in public class StudentController {
+
+
+Change     @GetMapping("students/{id}")
+to     @GetMapping("{id}")
+
+change     @GetMapping("students")
+ to    @GetMapping
+ 
+ 
+ @GetMapping("student") which was accessible at     //http:localhost:8090/student
+will be accessible at     //http:localhost:8090/students/student
+

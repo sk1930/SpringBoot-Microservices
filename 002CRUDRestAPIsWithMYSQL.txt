@@ -1,0 +1,818 @@
+Project : springboot-restful-webservices
+
+Learn to Build Microservices using Spring Boot 3, Spring Cloud, React, Kafka, RabbitMQ, REST API, Docker & IntelliJ IDEA
+
+
+
+Section 2: build CRUD Rest API using Spring MVC, Spring boot,
+Spring Data JPA, MySQL database
+
+three layer architecture:
+================
+postman <-> controller layer <-> service layer <-> repository layer <-> DB
+
+
+
+controller layer is also called an API layer because we keep all the spring MVC REST APIs in the controller layer.
+we use spring MVC to develop a controller layer.
+
+Next comes service layer.
+Well, basically service layer holds all the business logic of our application.
+Next comes a repository layer.
+
+Well, repository layer basically hold all the database related logic and the repository layer is also called Persistancer layer 
+and repository layer is responsible to talk with the database.
+
+
+In this application, we're going to use MySQL database and use Postman Rest client to test all the rest APIs
+
+1. Create and setup Spring Boot project in IntelliJ Idea.
+2. understand Spring Boot starter web dependency.
+3. configure MySQL database in our Spring Boot application.
+4. create userJPA entity.
+5. create UserRepository interface.
+6. Build Create user API.
+7. build Get user by ID Rest API.
+8. build get all users Rest API.
+9. build update user API.
+10. And finally, we will build delete user rest API.
+
+
+
+
+
+21. Create and set up spring boot project in IntelliJ IDEA
+====================================
+we'll create a Spring Boot project using spring initializer and then we'll import that
+project in IntelliJ idea.
+gOTO  start.spring.io
+This will bring up Spring Initializr.
+Well, Spring Initializr is a website or a web tool that we can use to quickly create and bootstrap spring
+based applications.
+Now, let's go and let's fill up the project information over here.
+Well, here we have two types of projects, the Maven project, and the Gradle Project.
+We're going to use the Maven project, so let's keep Maven project as selected over here.
+And here we have three kinds of JVM languages Java, Kotlin, and Groovy. We are going to use Java.
+So let's keep Java as selected over here.
+Next, we are going to use Spring Boot Version three.
+So let's select Spring Boot 3.2.4 the default selected version.
+So this is the latest version of spring
+boot as of now. Next, let's fill up the project metadata over here.
+So let's give a group as  sk.crud.mysql
+Well, you can go any group that you want.
+Next, artifact let's give
+Artifact as springboot-restful-webservices.
+Next, let's give project name as springboot-restful-webservices and then description Demo project for Spring Boot RestFul webservices 
+and then packaging name as sk.crud.mysql.springboot 
+and then packaging as a jar and then Java version
+17. Well, remember whenever you choose Spring Boot version three, then you have to choose Java version 17
+or later.
+Next, let's go ahead and let's select the dependencies.
+We'll go ahead and click on add dependency over here and here, just type web.
+Well, Spring Boot provides Spring web dependency that we can use to develop the RESTFul Web services.
+And this dependency internally provides Apache Tomcat as a default embedded container so that we can
+able to run our Spring Boot application in a development environment.
+
+
+Next, let's go and let's select MySQL driver.
+Well, we are going to connect our Spring Boot application with a MySQL database
+hence we are going to use MySQL driver JDBC dependency.
+Next, we use spring data JPA dependency. Well, we are going to use Spring data JPA to develop the
+repository layer or DAO layer in our Spring Boot application. Spring data JPA
+will reduce a lot of boilerplate code that is required to develop the DAO layer in a Spring Boot
+application.
+And this spring JPA(Java Persistence API) internally uses Hibernate as a JPA provider.
+So let's choose spring data JPA dependency.
+Next, let's choose a Lombok dependency. Well, we want to use Lombok dependency to reduce the boilerplate
+code.
+Well, basically Lombok is a Java annotation library, which helps to reduce a boilerplate code.
+
+Well, let's keep these dependencies as of now.
+
+If any dependency is required, we'll add in upcoming lectures.
+
+Next, let's go ahead and click on Generate Button to generate this spring boot project as a zip file
+on the local machine and you can able to see here our Spring Boot application is downloaded as a zip file
+
+let's unzip this folder.
+All right, now we have springboot-restful-webservices project in place.
+Next, we're going to import this project in IntelliJ idea.
+Let's open IntelliJ idea
+and in IntelliJ, you can see a couple of options New Project, Open
+Click on open in IntelliJ idea, and select the springboot-restful-webservices folder.
+Now, this will open Spring Boot project in IntelliJ Idea.
+
+
+Next, if you can see the src folder within that, we have the main folder and within the main folder
+we have Java and resources.
+Within the Java folder, we keep all the development-related source code and within a resource folder,
+we keep all the static resources in static folder as well as UI-related resources  in templates folder and all the application-level configuration in application.properties file.
+And here we have a test folder.
+Within that we keep all the test cases.
+Next, we have pom.xml file.
+It contains all the Maven Dependencies and Maven plugins.
+Now, let's go ahead and let's explore more about this Spring Boot starter Web Dependency.
+<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		
+Well, Spring Boot provides spring boot starter web dependency to develop the restful web services as
+well as spring
+MVC web applications and this spring boot starter web dependency internally provides all the required dependencies to develop restful web services.
+Along with that, this dependency also provides Apache Tomcat as an embedded default container.
+For example, if we dive into this dependency,
+
+click on control button and hover over org.springframework.boot to click on it.
+
+this dependency internally provides Spring Boot starter JSON
+dependency, Spring Boot starter Tomcat dependency
+
+Apart from that, it will provide all the spring related dependencies like spring web dependency, spring
+web mvc dependency.
+It means that this single dependency will gather all the required dependencies to develop the spring
+restful web services.
+Along with that, it will also provide a default embedded Tomcat server.
+We don't have to configure the external Tomcat server to deploy our Spring Boot application.
+This dependency internally provides an embedded Tomcat server so that we can quickly deploy our Spring Boot
+application in our local development environment.
+
+
+Now, let's go, and let's quickly run our Spring Boot application and let's see how it works.
+So go to the main entry point class.
+E:\MicroServices\springboot-restful-webservices\src\main\java\sk\crud\mysql\springboot\SpringbootRestfulWebservicesApplication.java
+
+So this is basically our spring boot main entry point class.
+It has a main method.
+All right.
+So typically in Java programs, we have a main method and the execution of the Java program starts from
+main method,
+So similarly in Spring Boot, we have a main method and the execution of the Spring Boot application
+starts from here.
+So we can simply use this main method to start our Spring Boot application.
+So go ahead and run the Spring Boot application by running this E:\MicroServices\springboot-restful-webservices\src\main\java\sk\microservices\springboot\SpringbootRestApiApplication.java.
+
+
+in resources/application.properties add
+server.port = 8090
+to configure the port
+and run 
+E:\MicroServices\springboot-restful-webservices\src\main\java\sk\microservices\springboot\SpringbootRestApiApplication.java.
+
+Create packaging structure
+
+new package inside sk.crud.mysql.springboot
+	-> controller
+	-> service
+	-> entity
+	-> repository
+	
+	
+	
+	Well, within a controller package, we keep all the spring MVC controllers.
+Next, let's create a one more package  service. Well, within a service package,
+we keep all the service  interface related classes.
+Next, let's create a one more package and lets you name as an entity. Well within an entity package,
+we keep all the JPA entities.
+Next, let's create one more new package as a repository.
+Well, within a repository package, we keep all the spring data JPA repositories.
+Now, we have created a simple packaging structure for our Spring Boot application.
+All right, in next lecture we will configure MySQL database in our Spring Boot application so that
+our Spring Boot application can able to connect to the MySQL database.
+
+
+22. configure MySQL database in our Spring Boot application.
+==================
+
+IN MYSQL WORKBENCH:
+
+create database user_management;
+#spring.datasource.username=root
+#spring.datasource.password=Sk123456
+USE user_management;	
+
+
+in application.properties :
+
+
+spring.datasource.url=jdbc:mysql://localhost:3306/user_management
+
+spring.datasource.username=root
+spring.datasource.password=Sk123456
+
+
+Next, let's go ahead and let's configure hibernate dialect.
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQLDialect
+
+So here we need to configure hibernate dialect because hibernate will use this dialect to create appropriate
+SQL statements with respect to database.
+Well, in our case we are using MySQL database.
+Hence we need to configure dialect for MySQL database so that hibernate can be able to use this dialect
+to create appropriate sql statements with respect to MySQL database.
+
+Next, let's configure one more Hibernate property.
+spring.jpa.hibernate.ddl-auto=update
+Well, this property
+pretty useful because this property tells Hibernate that create the database tables automatically If
+the tables are not exist and if the tables are already existing database table then change or alter
+the tables as per the jpa entity mapping changes.
+Well, whenever you want hibernate to create the tables automatically, then you can go ahead and use
+this property.
+Now, we have co
+
+
+So let me go to main entry point class and it has a main method
+so from here we can run our Spring boot application.
+And here you can see Lombok requests enable annotation processing.
+So go ahead and click on Enable here.
+And if you look at the console here, our Spring boot application is up and running in an embedded server
+on Port 8090.
+Well, there are no errors are exception in a console.
+It means that our Spring boot application is successfully connected with MySQL database and if you
+can observe the log statements in a console over here, hibernate here using MySQL8Dialect as a dialect
+to create appropriate sql statements with respect to MySQL database.
+And here, Spring boot by Default uses HikariDataSource as a data source to work with MySQL database
+and Spring boot by default uses
+HikariPool as a connection pool.
+
+
+Well, let me recap what we have done in this lecture.
+We have configured MySQL database in our Spring boot application and now our Spring boot application can
+able to connect to the MySQL database.
+
+
+
+
+23. Create User JPA entity
+================
+
+ go to entity package, right, create new Java class and let's give class name
+as User.
+
+//@Id
+//@GeneratedValue(strategy = GenerationType.IDENTITY)
+    //private long id
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID uuid;
+instead of ID , i use uuid and generation type.UUID 	
+	
+	
+And let's go and let's define the instance variables for this User class.
+//private long id 
+@Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID uuid
+	
+private string  firstName
+private string lastName
+private string email
+
+ Lombok annotations to automatically generate getter/setter methods as well
+as constructors.
+ @Getter annotation to generate a getter methods for this instance variables.
+ ,  @Setter Lombok annotation to generate setter methods for these instance variables.
+ ,  @NoArgsConstructor annotation to automatically create a no argument constructor
+or empty constructor.
+ ,  @AllArgsConstructor annotation to create a parameterized constructor
+ .
+Now, we have used Lombok annotations to automatically generate getter/setter methods as well as constructors.
+So this is how we can reduce the boilerplate code.
+We don't have to manually create getter/setter of methods as well as constructors
+ ,  .
+Now, we have created a simple User class.
+Let's make this User class as a JPA entity by using JPA annotations.
+Well, let's go ahead and let's annotate this User class with @Entity annotation from Jakarta.persistance
+package.
+Well, this @entity annotation specifies this class as a JPA entity.
+ @Table annotation from Jakarta.persistance package to configure a
+table details.
+@Table annotation annotation has a name attribute to configure a table name over here.
+So let's give a table name as users.
+Well, if you don't use @Table annotation over here, then JPA will create a table name by default
+as a class name.
+But in our case, we have to give a table name as a users
+hence we are using @Table annotation to customize the table structure.
+So here we are using @table annotation to configure table name, but apart from configuring table
+name, you can also configure the schema name.
+Also, you can define the unique constraints for this table.
+As of now, let's keep name as a users.
+
+
+ , we need to configure primary key for this User entity.
+Well, in order to configure a primary key, we have to use @Id annotation from Jakarta.persistance
+package.
+ , we need to configure a primary key generation strategy
+For that we have to use @GeneratedValue annotation from Jakarta.persistance package.
+So let's select @GeneratedValue annotation and this has a strategy attribute and we can use a generation
+type identity as a primary generation strategy.
+Well, JPA basically provides four type of primary key generation strategies for example, auto ,identity, table and sequence.
+Well, we want to use generation type identity, because this identity primary generation strategy internal
+uses database provided autoincrement feature to increment the primary key.
+Hence, let's select generation type identity here.
+Now, we have configured primary key as well as primary key generation strategy.
+
+ , we can also customize the column as well.
+In order to customize the column, we can use @Column annotation.
+For example, let's say we want to make this first name column as a not null.
+For that we can use @Column(nullable=false)
+ 
+Then we can also give a name to the column.
+For example, this @Column annotation has attribute that is name and we can give a name to the column
+For example, let's say first_name but JPA will give a column name as a field name.
+If the field has two words(firstName), then JPA will give column name first_name.
+Hence we don't have to again configure the column name here because JPA will give a column name as
+first_name for this field
+Let me remove this name from here.
+Similarly,  @Column annotation to make this last column as a not null.
+ let me make this email column as a not null, as well
+as unique.
+For that,  @Column(nullable=false, unique = true)
+
+And  , we have a unique equal to true attribute to make this email column as unique.
+Now, we have created User entity.
+ .
+ , let's go ahead and let's run our Spring boot application and let's see how we will create this
+users table in our database.
+So let me go to main entry point class over here.
+Well, we can also run our Spring boot application 
+E:\MicroServices\springboot-restful-webservices\src\main\java\sk\crud\mysql\springboot\SpringbootRestfulWebservicesApplication.java
+
+
+
+
+
+
+ , let's verify the database table in MySQL workbench.
+So let's go to MySQL workbench over here and here go to our database that is User_management.
+So let me set this database as a default schema.
+ , let's go to tables.
+Under tables, you can see users
+ .
+It means that hibernate automatically created this users database table.
+
+
+in mysql workbench 
+
+> describe users;
+
+
+
+24. Create Spring Data JPA Repository - UserRepository
+========================================
+
+In this lecture, we will create a spring data JpaRepository for this User JPA entity, so that will get crud
+methods to perform database operations on this User
+JPA entity. 
+Well, go to a repository package, right click on it new & then choose Java Class Select
+Interface and let's give interface name as UserRepository
+Perfect.
+Next, let's extend this UserRepository interface from JpaRepository interface from Spring Data Repository(import org.springframework.data.jpa.repository.JpaRepository;
+)
+Library.
+So you can see here JpaRepository interface from org.springframework.data.jpa.repository package.
+And this JpaRepository is a generic interface and we have to pass two parameters 1st parameter as
+a type of the entity and second parameter as a type of the primary key.
+Next, let's pass parameters to JpaRepository Generic interface.
+Well, 1st parameter as type of the entity in our case User JPA entity.
+Next, second parameter as the type of the primary key that is long. in my case it is UUID
+Well, if you can go to User JPA entity over here, this User JPA entity has a ID of type long. , I have uuid of type UUID.
+
+So this long data type, we are providing as a second parameter to this JpaRepository interface.
+So whenever your interface extends JpaRepository interface, then you have to pass two parameters 1st
+parameter as a type of the JPA entity and second parameter as a type of the primary key.
+Now, our UserRepository interface will get a crud methods to perform crud database operations for this User
+JPA entity so we don't have to provide implementation for this UserRepository interface.
+Spring Data
+JPA will provide a implementation for UserRepository interface and it will implement all the methods
+of this JpaRepository interface.
+
+
+Now, let me explain you how JpaRepository interface provides crud methods for this User JPA entity.
+Well, let's dive into JpaRepository interface and if we can notice here, JpaRepository interface
+internally extends crud repository interface. Well, let's dive into crud interface and notice here
+Crud repository interface provides all the crud methods.
+For example, save method
+saveAll,find,findById method
+findAll method, delete method
+So basically this crud repository interface provides crud methods to perform crud database operations
+on a given JPA entity.
+
+
+In our case, User is a given JPA entity, 
+And you might be wondering where the implementation for these crud methods.
+Well, if you go back to repository interface, this JpaRepository interface has an implementation
+class. --- SimpleJpaRepository
+For example, let me click on this icon and if you can notice here, SimpleJpaRepository class.
+Well, SimpleJpaRepository is the default implementation class of JpaRepository interface.
+For example, you can see here SimpleJpaRepository class implements JpaRepositoryImplementation
+interface and this JpaRepositoryImplementation interface internally extends JpaRepository interface.
+It means that SimpleJpaRepository class, it implements all the methods of JpaRepository interface.
+
+For example, if you can just scroll down and here you can see SimpleJpaRepository class provides implementation
+for deleteById() method, delete() method deleteAllById() method and deleteAll() method findById() method.
+
+So basically SimpleJpaRepository class
+provides implementation for all the JpaRepository interface methods.
+
+We'll notice here a couple of important points.
+************
+SimpleJpaRepository class it internally annotated with @Repository annotation.
+Hence we don't have to annotate our repository interface with @repository annotation.
+For example, we have a UserRepository interface,
+And typically we need to annotate this interface with @Repository annotation, but this SimpleJpaRepository
+class it implements indirectly UserRepository interface and this SimpleJpaRepository is
+already annotated with @repository annotation
+hence we don't have to use @Repository annotation in our JpaRepository interface.
+So let me remove @repository annotation from here.
+
+
+And one more very important point is SimpleJpaRepository class
+already annotated with @Transactional annotation.
+It means all the methods that is implemented by a SimpleJpaRepository class are by default transactional.
+We don't have to use @Transactional annotation to make these methods as a transactional.
+For example, if we can notice here, all the public methods in a SimpleJpaRepository are by default
+transactional, because all these methods are annotated with @Transactional annotation.
+For example, delete by the method is annotated with @Transactional annotation
+hence, this method provides a transactional support.
+If you can notice
+All the public methods that are annotated with @Transactional annotation.
+It means that by default all the methods in JpaRepository interface are by default transactional.
+Hence we don't have to make these methods as a transactional.
+Okay, So basically we use @Transactional annotation in a service classes, but we don't have to use our
+transactional annotation in a service class because all the methods in a SimpleJpaRepository class are,
+by default, transactional, isn't it?
+Well, these are the couple of important points you need to keep in mind whenever you use spring data jpa
+repositories in your spring boot project.
+Well, let me recap what we have done in this lecture.
+We have created a UserRepository interface
+that extends JpaRepository interface.
+Now, this UserRepository interface will get crud methods to perform crud database operations for this
+User JPA entity.
+
+
+
+25. Build Create User REST API
+=======================
+
+Well, if you look at our Spring boot application architecture here we have three layers controller
+layer, service layer and repository layer.
+Controller layer depends on service layer and service layer
+depends on the repository layer. 
+
+Well, we are going to create a rest api in a controller layer and rest API
+internally
+call service layer methods and service layer methods will internally call repository layer methods.
+
+
+So go to IntelliJ idea and go to service package, right click on the service package new and then choose Java
+class.
+And let's select the interface and let's give interface name as a UserService.
+Now, we have created UserService interface.
+
+
+
+Now, we have created UserService interface and we have defined createUser() method.
+Next, let's create a UserServiceImpl
+class
+It implements UserService interface.
+Go to service package, right-click on it new then create a new package and let's give package name
+as impl
+impl stands for implementation. Within a impl package, right click new and choose Java class and
+lets use class name as
+UserServiceImpl
+Now we have created UserServiceImpl
+class.
+Next, let's implement UserService interface and its methods.
+Well, here just mouse hover on this class you will get option to implement UserService interface methods.
+So go ahead and click on this implement methods over here and select the method that you want to implement
+and click on
+Okay.
+
+
+
+Next, let's go and let's annotate this UserServiceImpl class with @Service annotation.
+**********
+So make sure that whenever you create a service class in a Spring boot application, you have to annotate
+that service class with
+@Service
+annotation.
+
+Next, let's go ahead and let's inject UserRepository in UserServiceImpl class.
+So let's create an instance variable that is UserRepository instance variable over here. Well, we are
+going to use constructor based dependency injection to inject UserRepository into UserServiceImpl
+class.
+For that we need to create a constructor.
+Well, we are using Lombok Library so we can use a Lombok Library provided annotation to automatically
+create a constructor
+Right.
+So here I'm going to use @AllArgsConstructor annotation to automatically create constructor for this User
+repository instance variable.
+
+Well, typically we need to use @Autowired annotation to inject the dependency
+But spring 4.3 onwards, whenever there is a spring bean, it has a single parameterized constructor
+then we can omit using @Autowired annotation.
+Well, notice here we have a UserServiceImpl as a spring bean, and this Spring bean has only one parameterized
+constructor.
+Hence we don't have to use @Autowired annotation to inject this dependency
+
+Next, let's go ahead and let's implement createUser() method over here.
+simply call UserRepository so it has save() method
+just pass User object
+Now, we have implemented createUser() method.
+It will save User jpa entity object into database.
+
+
+
+Next, we will create a rest API and rest API will internally call this createUser() method.
+So go to controller package, right, click on it new and then choose Java class and let's go class
+Name as UserController
+Perfect.
+Let's annotate this class with @RestController annotation.
+Well, in order to develop the RESTful web services using spring mvc, we have to annotate a controller
+class with @RestController annotation and @RestController
+Annotation is a combination of @Controller annotation as well as @ResponseBody annotation.
+Well, instead of using these two annotations, Spring mvc provides a single annotation that is
+@RestController annotation.
+
+let me inject the dependency that is UserService dependency.
+So just create an instance variable, private UserService and then UserService.
+Well, we are going to use constructor based dependency injection to inject the dependency.
+Hence we need to create a parameterized constructor for this UserController class.
+Well, let's go ahead and let's use a Lombok notation to create a parameterized constructor.
+For example, let's use @AllArgsConstructor annotation.
+Well, notice here we don't have to use again @Autowired annotation to inject this dependency because whenever
+spring will find spring bean, it has only one parameterized constructor
+then spring will automatically inject the dependency.
+We don't have to use add @Autowired annotation
+All right, perfect.
+
+
+
+Next here, let's create the rest API.
+
+We just need to create a method and we need to use @PostMapping annotation to make that method as a rest endpoint.
+
+create 
+    public ResponseEntity<User> createUser(User user){
+A ResponseEntity class is a generic class
+We have to pass the type.
+
+Well , spring provides ResponseEntity class, which we can use to create a complete HTTP response and
+send that response back to the client
+
+Next, we need to make this method as a rest API by using spring annotations
+So let's go ahead and let's annotate this method with @PostMapping annotation.
+So this @PostMapping annotation will handle HTTP post request.
+So basically here we are using @PostMapping annotation to map incoming HTTP post request to this
+method.
+Next, let's use one more annotation that is @RequestBody annotation.
+Well, @RequestBody annotation it will convert the JSON into User java object.
+Well, basically client send User as a json request
+And that JSON we need to convert into java object for that
+We are using @RequestBody annotation over here.
+So basically this @RequestBody annotation internally uses a http message converters to convert a JSON
+into java object
+
+Now we have used @PostMapping annotation as well as @RequestBody annotation to make this methodas  createUser() rest API
+
+Well, we can use @RequestMapping annotation to define the base URL for all the APIs within this
+UserController.
+For example, let's annotate this UserController class with @RequestMapping annotation and let's
+pass the base URL.
+For instance api/users.
+So this base URL will applicable to all the rest endpoints which we define in a UserController class.
+Well, we don't have to configure the same URL for all the rest APIs
+
+
+
+So let's create a new request and let's choose a http method that is post method.
+
+
+request : 
+curl --location 'http://localhost:8090/api/users/create' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "firstName" : "sai",
+    "lastName" : "krishna",
+    "email" : "sk@gmail.com"
+}'
+
+
+response: 201 created 
+{
+    "uuid": "8b8d7cc4-44cf-442d-8321-a23a6bbef613",
+    "firstName": "sai",
+    "lastName": "krishna",
+    "email": "sk@gmail.com"
+}
+
+
+
+
+Now, let's head to the database and let's verify this record is inserted in a Users table or not.
+So let me go to MySQL workbench over here.
+select * from users;
+
+
+
+
+26. Build Get User By ID REST API
+=============================
+
+So let's first change the service layer and then we'll change the controller layer because controller
+layer depends on service layer.
+
+
+So let's go to UserService interface within a UserService interface
+Let's create a method 
+User getUserById(UUID uuid) and let's pass userId as a method argument.
+Next, let's go and let's implement this getUserById method in a UserServiceImpl class.
+call
+UserRepository instance.findById()  method.
+		Here         userRepository.findById(uuid);
+
+Well, if we can notice here findById() method returns Optional of type User.
+Well, we can get a User object from this Optional User by using get method.
+        return optionalUser.get();
+It has a get() method and it returns the User object.
+
+
+Next, let's go and let's create the rest API.
+Goto UserController
+and create the method     
+public ResponseEntity<User> getUserByID(@PathVariable("id") UUID uuid){
+
+
+
+
+Test:
+
+request:
+curl --location 'http://localhost:8090/api/users/8b8d7cc4-44cf-442d-8321-a23a6bbef613'
+
+
+response : 200 OK
+{
+    "uuid": "8b8d7cc4-44cf-442d-8321-a23a6bbef613",
+    "firstName": "sai",
+    "lastName": "krishna",
+    "email": "sk@gmail.com"
+}
+
+
+27. Build Get All Users REST API
+==========================
+
+1. UserService interface
+2. UserServiceImpl
+3. UserController 
+
+
+Stoppped here for now   and moved to section 11 Building Microservices
+
+
+
+
+28. Build Update User REST API
+10min
+Play
+29. Build Delete User REST API
+5min
+Start
+30. Download Source Code of this Section
+
+Section 4 : Using DTO Pattern
+
+31. Understanding DTO Pattern
+4min
+Play
+32. How to Use DTO in Spring Boot Application
+5min
+Play
+33. Refactor Create User REST API to use DTO
+10min
+Play
+34. Create and Use UserMapper Class
+5min
+Play
+35. Refactor Get User By Id REST API to use DTO
+4min
+Play
+36. Refactor Get All Users REST API to use DTO
+4min
+Play
+37. Refactor Update User REST API to use DTO
+5min
+Start
+38. Download Source Code of this Section
+
+Section 5 : Using Mapping Libraries to map Entity to DTO and vice versa
+
+Play
+39. ModelMapper and MapStruct Libraries Overview
+5min
+Play
+40. Using ModelMapper Library to Map Entity to DTO and Vice Versa
+13min
+Play
+41. Using MapStruct Library: Step 1 - Add Maven Dependencies
+5min
+Play
+42. Using MapStruct Library: Step 2 - Create Mapper
+5min
+Play
+43. Using MapStruct Library: Step 3 - Using Mapper and Test CRUD REST API's
+7min
+Start
+44. Download Source Code of this Section
+
+
+Section 6: Exception Handling
+45. Spring Boot Default Error Handling Overview
+4min
+Play
+46. Spring Boot REST API Exception Handling Overview
+2min
+Play
+47. How to Create and Use Custom Exception - ResourceNotFoundException
+13min
+Play
+48. Handing Specific Custom Exception - ResourceNotFoundException
+11min
+Play
+49. Handing Specific Custom Exception - EmailAlreadyExistsException
+9min
+Play
+50. Spring Boot REST API Global Exception Handling
+4min
+Start
+51. Download Source Code of this Section
+
+
+Section 7 : Rest API  validation 
+
+52. Validation with Spring Boot Overview
+4min
+Play
+53. Validate Create User REST API and Update User REST API Requests
+7min
+Play
+54. Customizing Validation Error Response
+12min
+Start
+55. Download Source Code of this Section
+
+
+Section 8 : Spring Boot Actuator - Production Ready Features
+56. Lecture Notes in PDF Format
+1min
+Play
+57. Adding Actuator to Spring Boot App
+4min
+Play
+58. The /info Endpoint
+4min
+Play
+59. The /health Endpoint
+2min
+Play
+60. The /beans Endpoint
+3min
+Play
+61. The /conditions Endpoint
+3min
+Play
+62. The /mappings Endpoint
+4min
+Play
+63. The /configprops Endpoint
+3min
+Play
+64. The /metrics Endpoint
+5min
+Play
+65. The /env & /threaddump Endpoints
+4min
+Play
+66. The /loggers Endpoint
+5min
+Play
+67. The /shutdown Endpoint
+
+
+Section 9 : Spring Boot Documentation:
+
+68. Section Overview and Demo
+4min
+Play
+69. Generate REST API Documentation using SpringDoc OpenAPI
+8min
+Play
+70. Define General API Information using Annotations
+6min
+Play
+71. Customizing Swagger API Documentation with Annotations
+12min
+Start
+72. Download Source Code of this Section

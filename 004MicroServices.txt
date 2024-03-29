@@ -1,0 +1,199 @@
+GitHub repository for Spring Boot 2.7.4 - https://github.com/RameshMF/springboot-microservices/tree/main/springboot-microservices
+
+
+
+GitHub repository for Spring Boot 3 - https://github.com/RameshMF/springboot-microservices/tree/main/v3/springboot-microservices
+
+
+
+78. Let's Draw Diagram Microservices Architecture for Our Project
+========================
+
+See 011MicroServicesArchitectureForOurProject
+
+In this lecture, let's draw this microservice architecture in a simpler way.
+And let's understand step by step, how to create a microservices project using this microservices architecture
+using Spring Boot and Spring cloud.
+Well, we'll start building two microservices.
+First microservices employee Service.
+Second microservice is Department Service.
+So these microservices should be have their own databases.
+We gonna use MySQL database.
+1. Well, we'll create these to microservices as a Spring Boot project and we'll connect these to projects
+with respect to MySQL databases.
+So once we build these two microservices, next, we'll see how these two microservices will communicate
+with each other using different approaches.
+	using rest template
+	use a web client to make a REST API call from employee service to department service
+	use open feign library from Spring Cloud to make a REST API call from employee service to department service.
+
+2. Next, we'll create a service registry using Spring cloud Netflix Eureka server and then we'll register these two microservices as a Eureka client with this Eureka server.
+
+3. Next, we are going to create a API gateway.
+So Spring Cloud provides Spring Cloud Gateway module which we can use to implement API gateway pattern
+in our microservices project.
+And then we'll configure the destination URL's of Employee service and department service in our
+API gateway so that API gateway can able to route the request to these two microservices.
+And here we have a client.
+Well, here client first sends the request to the API gateway and then API Gateway will route that request
+to the appropriate micro service.
+Well, you might be wondering how API gateway will know the hostname and port of these two microservices.
+Well, whenever we create a service registry and we register these two microservices as a client with
+this service registry based Eureka server, then this service registry will hold the hostname and port
+of these two microservices.
+And whenever a client sends a request to API Gateway, then API Gateway will get the host name and
+Port of respect to microservice from the service registry and then it will route that request to appropriate
+microservice.
+
+
+4. next we are going to implement
+one more pattern that is config server.
+Well, spring Cloud provides Spring Cloud config server module to implement config server.
+So this config server will basically externalize the configurations of these micro services.
+So basically we need to centralize the configurations of these two micro services in a central place and
+we are going to use Git as a storage to store the configuration files.
+So basically we are going to create Git repository on GitHub
+Next, these employee service and department service needs to fetch the configuration from config
+server.
+For that, we need to register this employee service department service as a config client to the config
+server.
+
+5. Next, we want to see how to implement a distributed tracing using Spring cloud sleuth module.
+So this Spring cloud sleuth module will help us to implement a distributed tracing in our microservices project.
+Well, whenever clients make a REST API call to the employee service, the request first come to the API gateway
+and then API Gateway will route that request to the employee service, and then employee service will
+internally call a department service to get the department details and then employee service will send
+a response back to the API gateway and then API Gateway will forward that response to the client.
+So this is how the flow goes.
+And in order to trace the log information of this complete call, we are going to implement a distributed
+Tracing using Spring cloud sleuth module.
+
+
+
+6.Next, we want to implement one more component that is circuit breaker
+Patten  So basically we are going to use Resilience4j framework to implement circuit breaker pattern,
+Well, we are going to implement circuit breaker pattern
+in a employee service because the employee service is internally calling department service and let's
+say due to some reason department service is down then employee service
+won't get a response from the department service,  
+And then again, employee service will send internal server error to the API gateway and then API
+Gateway will send that response back to the client.
+ So in order to avoid this kind of issue, we can use circuit breaker pattern.
+So this circuit breaker pattern helps the employee service to avoid a continuous calls to the department
+service whenever department service is down and this circuit breaker pattern will help employee service
+to return some default response back to the API gateway and then API gateway will send that default response
+to the client.
+
+
+7. Next, we are going to introduce one more microservice.
+Well, basically we will see how to add a new microservice step by step to the existing project.
+So we are going to basically create one more microservice that is organization service.
+And this service also have their own database
+that is MySQL database.
+ And then we'll register this organization service as a config client to the config server and also
+will register this organization service to the service registry and again, will configure the API Gateway.
+So once we create a organization service as a new microservice in our microservices project, next
+we are going to create a simple React application as a client to make a REST API call to API gateway
+and then API Gateway will route that request to our appropriate micro service.
+So this is the flow that we are going to follow to create this micro project step by step.
+
+79. Microservice Applications and It's Port Mapping
+We will be creating a lot of microservices so please refer below ports mapping (microservice applications with their ports):
+
+For the API-Gateway application, use the 9191 port.
+For the Department-Service application, use the 8080 port and for its instance, use port 8082
+For the Employee-Service application, use the 8081 port.
+For the Config-Server application, use the 8888 port.
+For the Service-Registry application, use the 8761 port.
+For the Organization-Service application, use the 8083 port.
+For the React-Frontend application, use the 3000 port.
+Zipkin Server uses the default port 9411
+
+
+
+
+
+
+
+81. How to Choose the Compatible Versions of Spring Boot and Spring Cloud
+====================================
+
+whenever we develop Spring Boot Microservices project, it is very important to know what
+Spring boot version is compatible with Spring cloud.
+In order to see the compatible versions, we can check out the official website of Spring framework.
+
+
+https://spring.io/projects/spring-cloud
+
+Scroll down to see the table 
+Table 1. Release train Spring Boot compatibility (see here for more detailed information).
+
+
+Release Train				Spring Boot Generation
+2023.0.x aka Leyton				3.2.x
+
+So goto https://start.spring.io/ and select 3.2.4 spring boot version
+Project : Maven
+Dependencies : search with spring cloud, you will see config client
+add that dependency and click on explore to open pom.xml 
+u will see    <java.version>17</java.version>
+    <spring-cloud.version>2023.0.0</spring-cloud.version>
+  </properties>
+  
+  
+  83. Create Two Microservices - EmployeeService and DepartmentService
+====================
+Goto 
+ https://start.spring.io/ and select 3.2.4 spring boot version
+Project : Maven
+Group: 
+sk.microservices
+artifact: department-service
+name : department-service
+description:  SpringBoot Microservices project as department service
+package name : sk.microservices.departmentservice
+packaging : jar
+java - 17
+
+Dependencies : 
+spring web
+mysql driver
+spring data jpa 
+lombok
+
+click on generate
+
+With same above configuration
+
+artifact: employee-service
+name : employee-service
+description:  SpringBoot Microservices project as employee service
+package name : sk.microservices.employeeservice
+ click on generate and download
+ 
+ 
+ Create  a folder SPringBoot-microservices
+ and put both unzipped employee-service and department-service
+ in the same folder.
+ 
+in IntelliJ IDEA at a time, we can open only one folder in a single window.
+But in our case, we want to open these two folders in a single window. 
+Now in IntelliJ IDEA, I'm going to open this parent folder that is springboot-microservices and
+this will import these two projects.
+
+Click on file - open --- E:\MicroServices\SpringBootMicroservices
+
+then it opens both in same window as it has both 
+employee-service and department-service under it 
+
+
+ you will get a pop up like Maven Scripts Found.
+So go ahead and click on Load over here.
+So this will load these two projects as a Maven projects.
+
+
+ whenever we open a parent folder in IntelliJ IDEA then it will treat these two subfolders
+as its modules.
+Okay, so if we can select this project and if we can go to file and go to project structure.
+We can able to see project.
+We know Microservices is a project and it has a two modules like department service and employee service.

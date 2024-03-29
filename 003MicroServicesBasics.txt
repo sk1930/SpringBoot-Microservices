@@ -1,0 +1,546 @@
+73. Monolith Architecture and Challenges of Monolith Architecture
+======================
+Well, first, I'm going to start by explaining what a monolithic application architecture is
+and what were some of the challenges of monolithic architecture and why the industry moved slowly towards
+the microservices architecture.
+And we'll see what exactly is microservices and we'll also see some of the benefits and best practices
+of microservices.
+And we'll also see how the communication happens between multiple microservices.
+
+
+Well, before microservices.
+The standard way of developing applications was with monolithic architecture. In monolithic architecture,
+all the components of application
+ the whole code basically is a part of a single unit.
+For example, consider we are developing an enterprise employeeee management system application, and it
+has different components or features like employee management, department, management, organization
+management, salary management, documents management, user account, and there could be other features
+like project tasks, etc..
+And in case a monolithic architecture, all these features are components or parts of the single monolithic
+application.
+See image 001Monolith
+
+It means all the code for these functionalities or features would be in one codebase as a part of monolithic
+application.
+Next, in monolithic architecture, everything is developed and deployed and scaled as a one unit.
+It means the monolithic application must be written in a single language with one technology stack.
+For example, consider our monolithic application that is employee management system application.
+It has a different features like employee management, department management, organization, salary,
+user account documents management, etc., etc..
+
+And in order to develop the monolithic application, we have to use only one technology stack.
+For example, consider we are using Java technology stack to develop this monolithic application.
+Then we cannot combine other technologies to develop some of the features in this monolithic application.
+So we have to use only one technology stack to develop the monolithic application.
+We cannot combine other technology stack to develop different parts or features of this single monolithic
+application.
+
+Next, in monolithic application development, if you have different teams working on different parts
+of the application, then they will need to coordinate to make sure that they don't affect each other's
+work.
+For example, consider our monolithic application that is employee management system application and team
+one is working on Employee and depatment functionalities or features and Team two is working on these organization and salary  functionalities
+and Team three is working on user authentication and documnet management functionalities.
+It means different teams are working on different parts of the monolithic application and they need
+to coordinate to make sure that they don't affect each other's work because all the functionalities
+are features are tightly coupled in a monolithic application.
+
+
+Next, if you want to deploy your monolithic application, then you have to build one single artifact
+that is a WAR file, and then you need to deploy this WAR file in an application server.
+For example, if you want to deploy your monolithic application, then you have to build this complete
+application as WAR file, and then you need to deploy this WAR file in our application server.
+And let's say if you've done some changes in some of the functionalities, for example, let's say if
+you change something in employee management system, then you have to package this complete whole monolithic
+application as an artifact or a WAR file, and then you need to deploy an application server 
+Even if you change the single line of code in any parts of this monolithic application, then you have
+to redeploy this complete monolithic application in an application server.
+For example, if you change the single line of code in a employee management feature, then you have to package
+this complete monolithic application as a one WAR file and you need to redeploy in the application server.
+So this was the standard way to develop the monolithic applications.
+
+
+
+Now, let's take a look into the challenges of monolith architecture.
+Well, if application is too large and complex, then its codebase also becomes too large and complex.
+And in monolithic application, the components or parts are more tightly coupled to each other.
+For example, consider this employee management system monolith application.
+All the features or all the components
+in this monolith, applications are tightly coupled to each other.
+The coordination between teams becomes much more complicated if the codebase becomes too large and the
+components or features are tightly coupled to each other.
+
+Next, you can only scale the entire application instead of a specific service or feature. Well consider
+you have a requirement to scale certain part of your monolithic application
+then you have to scale the entire monolith application.
+You can
+not scale only the specific service or feature of the monolith application.
+So this will lead to higher infrastructure costs, for example.
+Consider again, our employee management system monolith application.
+And if we want to scale only the employeee management feature or service, then we have to scale the
+entire, you know, employeeer management system monolith application.
+We cannot scale only this feature or this service.
+So this will lead higher infrastructure costs because unnecessarily we are also scaling other features
+or services of this monolith application.
+
+
+Next, it is difficult if services need a different dependency variance.
+For example, consider again our employeee management monolith application and let's say employeee management
+department management
+so both the features or services are want to consume the third party library APIs.
+And let's say department management want to use the third party library version 1.5 and if you employee
+management want to use the third party library was in 1.6, then it is not possible in a monolith
+application because in a monolith application we can add only one dependency with its version.
+We cannot add two dependencies with two different versions.
+
+
+Next, in monolith application, the release process takes longer. Well, on every change the entire
+application needs to be tested and the entire application needs to be built and deployed. Well, in monolith
+application, the release process takes longer because on every change we need to restart the deployment
+process.
+For example, consider this employee management system monolith application over here.
+And let's say if we change something in employee management feature, then we need to rebuild this entire
+monolith application and we need to redeploy in an application server.
+So this is one of the main challenge because even if we change a single line of code in this entire monolith
+application, then we need to redeploy this entire monolith application in our application server.
+
+
+Next, in monolith application, all the modules are tightly coupled and if there is any bug in one module
+can potentially bring down the entire application because all the modules in a monolith application
+are tightly coupled.
+
+So these are the few challenges of monolith architecture and microservices will address all these challenges
+of monolithic architecture.
+
+
+
+
+74. What is Microservices & How It Solves the Challenges of Monolith Architecture
+===============================
+We'll see what is microservices and how microservices will address the challenges of monolith architecture.
+Now, let's take a look into what is microservices.
+
+See 002Microservices image
+
+Well, with microservices, we break down the application in essentially multiple smaller independent
+applications so we can have several independent small or micro applications that make up this one big
+application.
+For example, we can break down the application into multiple smaller independent applications so that
+microservices can be loosely coupled and microservices can be developed independently and microservices
+can be deployed independently and microservices can be scaled independently.
+
+
+Next, let's see how we can decompose or break down the existing monolith application into microservices.
+Well, consider we have employee management system monolith application, and we have a requirement to
+convert this monolith application into microservices.
+Then we basically split or break down this entire monolith application into smaller independent micro
+applications, for example.
+See 003Microservices image
+Consider this monolith application has different modules or features like employee management, department,
+management, organisation management, salary management, user account, document management.
+So if we want to convert this monolith application into microservices, then we will convert each feature
+or module of this monolith application into a separate service in a microservices project.
+And each services in microservices project have their own databases.
+For example, consider we have a microservices project.
+It has different services like employee management, service department, service organization, service, salary,
+user and document services.
+And in microservices project, typically each service have their own database and each microservice
+should be independent to each other and each microservice should be developed separately and each microservice
+should be deployed separately and each microservice should be scaled separately.
+So these are the important characteristics of microservices.
+
+
+And if you want to scale microservices project, then you can go ahead and scale that specific service.
+You don't have to scale the entire microservices project.
+But in case of monolith application, if you want to scale a specific service or module, then you have
+to scale the entire monolith application.
+
+Next, as monolith application becomes larger and complex, its codebase also becomes too large and
+complex.
+But in case a microservices project, each service have their own codebase so we can maintain a smaller
+codebase for each and every services.
+
+Next, in case of monolith application, if we change something in any part of this monolith application,
+then we need to redeploy this entire monolith application in application server.
+But in case of microservices project, if we change something in any specific service, then we have
+to redeploy that specific service only.
+We don't have to redeploy the entire microservices project.
+
+Next, in Monolith application, all the modules or features are tightly coupled and if there is any
+bug in one module or feature, it can affect the other modules as well.
+But in case of microservices project all the features or services are independent to each other and
+if there is any bug in one service, it does not affect other services.
+
+So this is how the microservices will address the challenges of monolith architecture.
+Well, if you look at the challenges of monolith architecture over here, if application is too large
+and complex, then its codebase also becomes too large and complex.
+But in case of microservices project, all the services are independent to each other and we can have
+a smaller codebase for each and every services in a microservices project.
+
+Next, in monolith applications, all the components or parts are more tightly coupled to each other,
+but in case of microservices project, all the services are independent to each other.
+It means all the services are loosely coupled in a microservices project.
+
+Next, you can only scale the entire monolith application instead of specific service or feature.
+It means if you have a requirement to scale a specific feature or a service in monolith application,
+then you have to scale the entire monolith application.
+Okay, You cannot scale a specific service or feature in a monolith application, so that will lead
+to higher infrastructure costs.
+But in case of microservices project, you can scale a specific service because all the services are
+independent in microservices project, so you can scale the services as per your requirement.
+
+Next, in Monolith application, it is difficult if services need different dependency versions of 3rd party apis because
+in Monolith application we can add only one dependency with
+one version.
+We cannot add two dependencies with two different versions, isn't it?
+But in case of Microsoft Project, all the services are independent of each other so we can add a dependency
+to required services in a microservices project.
+
+Next, in the Monolith application, the release process takes longer because on every change
+the entire application needs to be tested and the entire application needs to be built and deployed.
+But in case of microservices project, the release processes don't take longer time on every change
+because if you change any service in Microsoft project, then we have to redeploy that specific service
+only.
+You don't have to redeploy the complete Microservices project.
+All right.
+
+Next, in Monolith application, all the modules are tightly coupled and if there is any bug in one module
+can potentially bring down the entire monolith application.
+But in case of microservices project, all the services are independent to each other.
+It means all the services in the microservice project are loosely coupled, and if there is any bug
+in one service, it won't affect other services.
+
+
+75. Microservices Architecture Benefits and Best Practices
+=========================================
+
+let's take a look into a few of the important questions.
+Well, whenever we create a microservice architecture. We will encounter these important questions like
+
+how to break down the application,
+what code goes where, 
+how many services we create,
+how big small services should be, 
+how does services should communicate with each other.
+
+So these are the important questions we are going to discuss in this lecture.
+Well, the best practice is to break down the application into components or into microservices based
+on the business functionality, not a technical functionalities.
+
+See 003MicroServices
+For example, consider our enterprise employee management application over here.
+So this application has different business features or functionalities like employee management functionality,
+department management, organization management, salary management, user account, document management,
+and there could be other business functionalities like project management,
+task management, leave management.
+Okay.
+So whenever if you want to break down application into smaller components or microservices, then you
+have to look at the business functionalities, not technical functionalities.
+For example, you can convert this employeee management business functionality or a feature into your
+employeee management service.
+Next, you can convert this department management business functionality into a department management
+service.
+Similarly, you can convert this organization, salary, user, document business functionalities into
+respect to microservices.
+So this is the best practice to break down a large application into smaller components or microservices
+based on the business functionalities, not technical functionalities.
+So this is very important point.
+
+
+Next, best practice is separation of concerns.
+It means one service for one specific job.
+Well, this is basically single responsibility principle.
+It means each and every service should have their own responsibilities.
+We cannot combine different responsibilities into a single service.
+For example, we have employee management. It has a responsibility to manage the employees. department management service
+has the responsibility to manage the departments.
+Similarly, organization, salary, user account document.
+So all these microservices have their own responsibilities.
+We cannot combine multiple responsibilities into a single service.
+Each service have to do their own specific job.
+
+
+Next, a very important characteristic of each microservices that they should be self-contained and
+independent from each other.
+This means each service must be able to develop, deployed and scale separately without any tight dependencies
+on any other services, even though they are part of the same application.
+
+So these are the important characteristics of each microservice in a microservices project.
+Well, in microservice architecture, we can use more than one technology stack.
+For example, if we look at this example here in microservices project, all the services are independent
+to each other and each and every service exposes the rest APIs.
+So we can use more than one technology stack to develop different microservices.
+For example, we can use a Java to develop employee management and department management, you microservices.
+So these services will basically
+exposes the REST API's
+Next, we can use Python to develop organization management and salary management microservices.
+So these services also exposes the rest APIs.
+So Microservices is basically a language neutral.
+It means you can use more than one technology stack to build the microservices and expose its rest APIs.
+
+Next, let's see how those services should communicate.
+
+Well, there are two types of communication styles. Synchronous communication and asynchronous communication.
+Well, in case of synchronous communication, the client sends a request and waits for a response from
+the service.
+For example, consider we have two microservices, Microservice A and microservice B, and let's say
+microservice A want to communicate with microservice B, then microservice A can send a HTTP request.
+microservice A exposes the rest APIs and Microservice B also
+exposes the rest APIs.
+And in order to call the APIs, we can use HTTP protocol in a request.
+So microservice A will send a request to microservice B and then microservice A have to wait a response
+from the microservice B then only microservice can continue its task.
+So whenever microservice sends a request to microservice B, then microservice A can continue its task
+only when it will get a response from the microservice.
+B So this is how the synchronous communication works.
+ see 004SynchronousCommunication
+ and 005AsynchronousCommunication images
+Next, in case of Asynchronous communication, the client sends a request and does not wait for a response
+from the service.
+Well, in case of Asynchronous communication, the microservices should have to use a message broker
+for Asynchronous communication between multiple microservices.
+For example, consider here we have the employee service and department service and employee service
+Wants to communicate with department service.
+Then employee service have to send a request or message to the message broker and the department service
+will subscribe to that message broker and it will get the message from the message broker.
+So this is how the asynchronous communication works. Whenever employee service sends a request to department
+service through message broker
+then employee service don't have to wait a response from the department service and the service can
+continue its task.
+So this is how the asynchronous communication works.
+
+
+
+
+
+76. Understanding Spring Cloud and It's Important Modules
+========================
+
+In this lecture, we'll understand about Spring Cloud.
+Well, consider we have a microservices project, let's say
+
+see image 006ApiGateway image
+In our project, we have multiple microservices.
+Consider M1,M2,M3  Microservice one, microservice two, Microservice three, so on and so forth.
+And here we have a client C and this client will consume the rest
+APIs from multiple microservices. Well, consider microservice
+One exposes some of the rest APIs.
+Microservice two also exposes some of the rest APIs.
+Microservice three also exposes some of the rest APIs
+and this client will consume the rest APIs from multiple micro services.
+Now, this is our microservice project.
+Now, let's understand the challenges in this microservices project.
+Well, in the enterprise application, we may have 100 or thousands of microservices and we may encounter
+a lot of challenges while building these microservices.
+So consider here, in this project we have only three microservices, but in our enterprise application
+we may have 100 or thousands of microservices.
+And here basically this client is calling the multiple backend microservices to get the response from
+different REST APIs
+ And whenever this client call a multiple microservices, then this client have to remember the host and
+port of all the microservices that it wants to communicate.
+So this is not a good idea or a best practice that the client have to remember all the hostnames and
+ports of all these microservices.
+And let's say whenever we introduce a new microservice in this project, then we have to configure that
+microservice hostname and port in this client so that client can call that particular microservice,
+ So manually doing all these things is not a good practice.
+
+So this is basically a challenge and the solution could be like this.
+
+We can introduce one central component(API Gateway) between client and  microservices and client will send a
+request to this central component, and this central component will route that request to appropriate
+microservice.
+And we can call this central component as the API gateway
+
+API Gateway Pattern 
+******
+So API Gateway is basically a pattern that we can use to handle the client request and route that client
+request to appropriate microservice. 
+
+
+Let's understand one more challenge over here.
+Config Server Pattern  See 007ConfigServerPattern
+*************
+So if we can notice here in this project we have only three microservices, but in enterprise application
+we may have a lot of microservices,  And each microservice have their own configuration file to maintain its configuration
+ And let's say we have a requirement to change the configuration file of multiple microservices.
+Then we have to go into each and every microservice and then we need to change the configuration.
+So this is not a good idea or a good practice to go into each and every microservice and change
+the configuration file
+ So there should be a solution
+like we can have a central place where we can keep all the configuration files of all these microservices.
+And whenever there's a requirement to change the configuration of multiple microservices, then we can
+simply go ahead and change in a central place over here.
+For example, let's say we use a Git repository to keep all the microservices configuration files,
+and whenever there is a requirement to change the configuration files of all these microservices, then
+we can go ahead and simply change in a Git repository
+and that change will reflect in all the microservices
+All right, to externalize the configuration files of these microservices, we can implement one more
+pattern let's call it config server.
+So this config server will externalize the configuration of multiple microservices in a central place
+and whenever there is a requirement to change a configuration, we can simply change the central place
+that should be reflecting other microservices.
+
+Let's understand one more challenge.
+circuit breaker pattern. See 008CircuitBreakerPattern
+***********
+Consider client wants to consume the REST APIs of
+Microservice one then client
+have to first send a request to API gateway and then API gateway will route that request to Microservice
+one and consider Microservice one
+internally calling Microservice two
+and consider due to some reason Microservice two is down.
+Then Microservice one won't get a response from the Microservice two and Microservice one will return
+the error response to the API Gateway and then API Gateway will forwarded that error response
+back to the client.
+So if you can notice here, if Microservice two is down, then Microservice one will continuously call
+to the Microservice two.
+So this is not a good idea that whenever Microservice two is down and Microservice one have to continuously
+call to the Microservice two.
+So this is basically wasting of our resources.
+So there should be a mechanism where this Microservice one
+have to limit the number of calls to the Microservice two whenever this Microservice two is down or not
+available.
+So this challenge we can implement by using
+circuit breaker pattern.
+
+
+Let's understand one more challenge.
+Service Registry and Discovery  (SR & D )  in image See 009ServiceRegistry image
+Consider in this microservices project, we have three microservices Microservice one, Microservice
+two and Microservice three.
+And let's say we have a requirement to scale Microservice one project, then we'll start multiple instances,
+ Let's say instance one, instance two and due to some reason, instance two of MicroService 1 is down and microservice
+two is done.
+And we need a mechanism where we can keep track of all these microservices and its instances so that
+we can see what are the microservices are up and what are the microservices are down
+so in order to solve this issue, you can use a service registry
+and discovery.
+So this service registry basically maintains the hostnames and ports of all the registered microservices
+and it's instances.
+And this API gateway will basically get to the hostname and port of a particular microservice from the
+service registry.
+
+
+Next, let's understand one more challenge.
+distributed tracing
+********
+Let's say a client make a HTTP REST API call to API Gateway and then API Gateway will route that request to microservice
+one and microservice one will internally call to microservice two.
+So this is a complete a call hierarchy,  
+And we need a log information of this complete,  call from start to end.
+So this we can implement using distributed tracing, 
+So this distributed tracing pattern will help us to identify the complete call hierarchy from start
+to end.
+Next, few more challenges like implementing load balancing and implementing centralized security in
+API gateway.
+So these are the challenges that we encountered whenever we develop the microservices project.
+
+
+Next, let's say we want to develop one more microservices project.
+Then we'll basically use all these patterns like API Gateway, service registry, config server,
+distributed tracing, circuit breaker.
+ And in order to implement these patterns, we have to write a code manually.
+.
+So this is where Spring Cloud comes into picture.
+So if we use the spring cloud, then we don't have to write the code manually because Spring cloud provides
+implementation for all these patterns.
+So Spring Cloud basically provides the tools to implement these commonly used patterns in a microservices
+project.
+
+https://spring.io/projects/spring-cloud
+Well, if you can go to Spring Cloud official website over here you can see Spring Cloud provides tools for
+developers to quickly build some of the common patterns in a distributed systems.
+So here distributed systems is nothing but a microservices project, and Spring Cloud provides different
+tools or modules to build some of the common patterns.
+So here common patterns meaning these different patterns like config server, API gateway, service
+registry, circuit breaker, distributed tracing, security.
+So these are the common patterns that we can use in each and every microservices project.
+And Spring Cloud provides the tools or different modules to solve or implement these different patterns
+in a microservices project.
+So if you go to a spring official website page over here, Spring Cloud provides different modules
+to implement different patterns.
+For example, here you can see Spring Cloud circuit breaker module, which you can use to implement circuit
+breaker pattern.
+Next, here we have spring config module, which we can use to implement config server to externalize
+the configuration files of different microservices.
+Next, here we have Spring Cloud Gateway module, which we can use to implement API Gateway in our microservices
+project.
+Next, we have Spring Cloud OpenFeign module, which you can use to make a REST API call from one microservice
+to another microservice.
+And here we have Spring cloud sleuth module, which we can use to implement and distributed tracing.
+And next, we have Spring Cloud stream module, which we can use to implement asynchronous communication
+between multiple microservices.
+
+
+77. Microservices Architecture with Spring Boot and Spring Cloud
+========================================
+see 010MicroServicesArchitecture
+
+we'll take a look into microservice architecture using Spring Boot and Spring Cloud.
+Well, we are going to use employee Management Project as an example to create a microservices architecture.
+Well, you can take any example of any project.
+For example, you can take e-commerce application or you can take any healthcare domain related application.
+So you can take any project as an example, but follow the same steps to create a microservice architecture
+using Spring Boot and Spring Cloud. 
+
+Well, we are going to create three core backend microservices employee
+service, department service and organization service, and all these three microservices have their
+own databases.
+Well, we are going to use MySQL database as a database for these microservices.
+So whenever you create a microservice in your project, make sure that each microservice should have
+their own database.
+
+Once we build the microservices next, we'll see how these microservices communicate with each other.
+Well, we are going to use different ways to make a REST API call from one microservice to another
+Microservice. 1. rest template, 2. web client 3. Spring cloud provided open feign library.
+ So in this course, I'm going to show you three different ways to make a REST API call from one microservice to
+another
+Microservice.
+Well, once we know how microservices communicate with each other, next we are going see how to implement service
+Registry and discovery pattern in our microservices project.
+Well, Spring Cloud provides Spring Cloud Netflix Eureka Based Service Registry module that we can
+use to implement service registry and discovery pattern in our microservices project.
+Well, service Registry and discovery is really essential pattern that we can use to avoid hard coding
+hostnames and ports.
+
+Next, we will implement config server to externalize the configurations of all these three microservices
+into a central place that is git repository.
+Well, Spring cloud provides Spring cloud config module that we can use to implement config server to externalize
+the configuration files of all these three microservices into a central place.
+We are going to use git repository as a storage for config server.
+Well, once we know how to use config server to externalize the configuration files.
+Next, we have to implement API gateway.
+Well, API Gateway plays a very important role in our microservices architecture.
+So whenever a client want to make a call to different microservices, then client have to remember the
+host names and ports of all these microservices.
+So there should be a solution where a client can send a request to the central component
+so that is where the API gateway comes into picture.
+So whenever a client sends a request to the backend microservices, then client have to send a request
+to the API gateway first and then the API gateway based on the routing rules, it will route that request
+to appropriate microservice.
+So this is how the API gateway plays an important role in a microservices architecture.
+Well, Spring Cloud provides Spring Cloud Gateway module to implement API gateway pattern in a microservices
+architecture.
+Next, once we know how to implement API gateway in a microservices project, next we are going to implement
+a distributed tracing in our microservices architecture.
+Well, Spring Cloud provides Spring Cloud sleuth module, which we can use to implement a distributed tracing
+in our microservices project.
+Well, along with Spring Cloud Sleuth, we'll also use Zipkin to visualize the tracing log information
+in a user interface.
+Well, Zipkin provides a user interface to track the trace information through web application.
+So once we know how to implement distributed tracing using Spring Cloud Sleuth, next we are going to
+create a simple React application which will make a call to backend microservices. Well, we are going
+to implement circuit breaker pattern in a employee service because the employee service is internally
+calling department service and let's say due to some reason, department service is down.
+Then employee service won't get a response from the department server, isn't it?
+And then again, employee service will send internal server error to the API gateway and then API
+Gateway
+will send that response back to the client.
+ So in order to avoid this kind of issue, we can use a circuit breaker pattern.
+So this circuit breaker pattern helps the employee service to avoid a continuous calls to the department
+service Whenever department service is done and this circuit breaker pattern will help employee service
+to return some default response back to the API Gateway and the API Gateway will send that default response
+to the client.
+ So this is a simple microservices architecture that we're going to follow to create a microservices
+project using Spring Boot and Spring Cloud.
+

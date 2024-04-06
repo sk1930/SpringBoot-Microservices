@@ -197,3 +197,432 @@ as its modules.
 Okay, so if we can select this project and if we can go to file and go to project structure.
 We can able to see project.
 We know Microservices is a project and it has a two modules like department service and employee service.
+
+
+85. DepartmentService - Configure MySQL Database
+===================
+
+in mysql 
+create database department_db;
+
+
+E:\MicroServices\SpringBootMicroservices\department-service\src\main\resources\application.properties
+
+spring.datasource.url = jdbc:mysql//localhost:3306/department_db
+spring.datasource.username=root
+spring.datasource.password=Sk123456
+
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQLDialect
+spring.jpa.hibernate.ddl-auto=update
+
+Do similar changes for employee_db
+
+E:\MicroServices\SpringBootMicroservices\employee-service\src\main\resources\application.properties
+
+For one use 
+server.port = 8090
+ for other use 
+ 8091
+ 
+ 
+ Run : E:\MicroServices\SpringBootMicroservices\employee-service\src\main\java\sk\microservices\employeeservice\EmployeeServiceApplication.java
+ 
+ 
+ Run 
+ E:\MicroServices\SpringBootMicroservices\department-service\src\main\java\sk\microservices\departmentservice\DepartmentServiceApplication.java
+ 
+ 
+86. DepartmentService - Create Department JPA Entity and Spring Data JPA Repository
+======================
+
+
+create packages 
+entity
+repository
+service
+	impl
+controller
+dto
+
+in entity create Department.java
+@Id,@GeneratedValue(strategy= GenerationType.IDENTITY)
+id,departmentName, departmentDescription, departmentCode
+
+@Getter, @Setter, @NoArgsConstructor, @AllArgsConstructor,
+@Entity, @Table(name="departments)
+
+
+in repository package create DepartmentRepository 
+public interface DepartmentRespository extends JpaRepository<Department, UUID> {
+
+
+in the dto package create 
+DepartmentDto
+ with the fields of Department entity
+ @Setter, @Getter, @NoArgsConstructor, @AllArgsConstructor
+ 
+ 
+in service -- define DepartmentService interface with 
+saveDepartment method
+in impl -- create DepartmentServiceImpl class and implement saveDepartment method 
+
+
+
+Well, typically we need to use @Autowired annotation to inject the dependency
+But spring 4.3 onwards, whenever there is a spring bean, it has a single parameterized constructor
+then we can omit using @Autowired annotation.
+
+
+Controller package create DepartmentController
+@RestController -- it becomes spring mvc rest controller, capable of handling http requests.
+
+
+test the api 
+Request
+    curl --location 'http://localhost:8090/api/departments/create' \
+--header 'Content-Type: application/json' \
+--data '{
+    "departmentName" : "dep1",
+    "departmentDescription" : "department description 1",
+    "departmentCode" : "depCode1"
+}'
+
+Response:
+{
+    "uuid": "d1936d1b-adc9-4335-9859-78afe2efd69f",
+    "departmentName": "dep1",
+    "departmentDescription": "department description 1",
+    "departmentCode": "depCode1"
+}
+
+
+88. DepartmentService - Build Get Department REST API
+=======
+
+change Service layer  first
+			serviceImpl
+Repository
+	*****
+	 let's write one spring data JPA query method that will retrieve a department by department code.
+	So let's go to DepartmentRepository and within a DepartmentRepository let's write a query method.
+	let's give method name as findByDepartmentCode and return type of the method as Department.
+	
+	So this is the naming convention that typically we follow to create the query method using spring data JPA. 
+	pass a parameter as a departmentCode
+
+
+test:
+/*Request:
+    curl --location 'http://localhost:8090/api/departments/depCode1'
+
+    Response:
+    {
+    "uuid": "d1936d1b-adc9-4335-9859-78afe2efd69f",
+    "departmentName": "dep1",
+    "departmentDescription": "department description 1",
+    "departmentCode": "depCode1"
+}
+
+     */
+	 
+	 
+	 
+	 
+90. EmployeeService - Create Employee JPA Entity and Spring Data JPA Repository
+===========================
+create entity,controller,dto,repository,service packages
+create entity.Employee class
+create interface repository.EmployeeRepository
+
+run E:\MicroServices\SpringBootMicroservices\employee-service\src\main\java\sk\microservices\employeeservice\EmployeeServiceApplication.java
+
+to see if employee table is automatically created in mysql
+
+
+91. EmployeeService - Build Save Employee REST API
+==================
+create dto.EmployeeDto
+create Service.EmployeeService
+create controller.EmployeeController
+
+test and verify in mysql database for the employee record created
+
+92. EmployeeService - Build Get Employee REST API
+====================
+EmployeeService
+EmployeeServiceImpl   --- 
+		So findById method basically returns an optional of type Employee.
+		So let's use the get() method to get an employee object from the optional.
+Controller
+
+
+
+
+ModelMapper and MapStruct Libraries
+===================
+**********
+
+
+ModelMapper used in service layer to covert JPA entity into Dto and viceversa
+
+1. add a modelmapper Maven dependency to our Spring Boot application.
+2. configure modelmapper class as a spring bean.
+3. inject and use modelmapper spring bean in a service class.
+
+
+1. Google search model mapper maven dependency
+https://mvnrepository.com/artifact/org.modelmapper/modelmapper
+click on latest version 3.2.0 here 
+
+https://mvnrepository.com/artifact/org.modelmapper/modelmapper/3.2.0
+
+
+<!-- https://mvnrepository.com/artifact/org.modelmapper/modelmapper -->
+<dependency>
+    <groupId>org.modelmapper</groupId>
+    <artifactId>modelmapper</artifactId>
+    <version>3.2.0</version>
+</dependency>
+
+
+
+at the end of dependencies in pom.xml past 	</dependency>
+		<!-- https://mvnrepository.com/artifact/org.modelmapper/modelmapper -->
+		<dependency>
+			<groupId>org.modelmapper</groupId>
+			<artifactId>modelmapper</artifactId>
+			<version>3.2.0</version>
+		</dependency>
+
+	</dependencies>
+	
+	
+	
+Second step is to configure 
+
+E:\MicroServices\SpringBootMicroservices\department-service\src\main\java\sk\microservices\departmentservice\DepartmentServiceApplication.java
+
+Within this class we can configure spring beans.
+So within this class, let's create a method and this method returns instance of modelmapper class and
+make sure that you choose modelmapper class from org.modelmapper package over here and let's use
+method name as modelmapper and then let's return the instance of ModelMapper class .
+Now we have created a method.
+Let's make this method as a spring bean by using @Bean annotation.
+So this @Bean annotation will configure this ModelMapper class as a spring bean and it will register
+in our application context
+Now we have configured modelmapper classe as a spring bean.
+
+
+
+Third step 
+
+is we need to inject and use modelmapper spring bean in a service class.
+So go to our project and go to service class that is DepartmentServiceImpl class.
+And within this class, we'll first inject modelmapper 
+So here let's declare the instance of ModelMapper class over here.
+And here we don't have to create a constructor because we are using @AllArgumentConstructor to
+create a constructor for this class.
+And also we don't have to use @Autowired annotation to inject the dependency because whenever we have a spring
+bean it has a single parameter as constructor
+then we can omit using @Autowired annotation
+So spring will automatically inject the dependency.
+Whenever it has a spring bean, it has only one parameterized constructor.
+Now we have injected modelmapper.
+Next, let's modify the methods
+saveDepartment and getDepartmentByCode
+
+
+
+41. Using MapStruct Library
+============================
+
+In previous lecture, we have seen how to use Model Mapper library in our Spring Boot application to
+convert User entity into UserDto and UserDto into User entity.
+
+Here see how to use MapStruct library in our Spring Boot application to map User JPA entity
+into UserDto and UserDto into User JPA entity.
+Well, here are the development steps.
+1. Add MapStruct Maven Dependency
+2. Create EmployeeMapper using MapStruct.
+3. Use EmployeeMapper in EmployeeServiceImpl class.
+
+1st step :
+From https://mapstruct.org/documentation/installation/
+
+copy 
+ <dependency>
+        <groupId>org.mapstruct</groupId>
+        <artifactId>mapstruct</artifactId>
+        <version>${org.mapstruct.version}</version>
+    </dependency>
+
+
+also copy
+
+    <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
+
+from <properties>
+
+in DepartmentServiceApplication 
+
+pom.xml
+
+paste the dependency at the end of dependencies section 
+and property in the properties section
+
+
+
+Next, we need to add MapStruct processor plugin.
+Well, if we go to official documentation
+https://mapstruct.org/documentation/installation/
+
+and go to plugin section over here you can see maven compiler plugin.
+And within that we have a annotation processor path that is MapStruct processor.
+So one more important point here is in our Spring Boot application, we are using Lombok Library
+
+So in order to support this Lombok library with MapStruct, we need to use a few more configuration.
+For example, if you go to official documentation and here you can see examples, So go ahead and click
+on this examples over here and it will navigate to the GitHub repository that is MapStruct examples 
+https://github.com/mapstruct/mapstruct-examples
+
+and here you can see MapStruct Lombok.
+So let's go ahead and click on this project and go to pom.xml file and scroll down.
+Go to plugin section over here and here we have plugin maven compiler plugin
+It has different annotation processor paths like MapStruct processor, Lombok and
+Lombok mapstruct binding.
+All right, so these are the annotation processor parts we have to use in order to support Lombok with
+MapStruct.
+So here, let me copy this plugin and let me go to our project.
+Go to pom.xml file and go to plugin section over here and here.
+
+		<plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.8.1</version>
+                    <configuration>
+                        <source>1.8</source>
+                        <target>1.8</target>
+                        <!-- See https://maven.apache.org/plugins/maven-compiler-plugin/compile-mojo.html -->
+                        <!-- Classpath elements to supply as annotation processor path. If specified, the compiler   -->
+                        <!-- will detect annotation processors only in those classpath elements. If omitted, the     -->
+                        <!-- default classpath is used to detect annotation processors. The detection itself depends -->
+                        <!-- on the configuration of annotationProcessors.                                           -->
+                        <!--                                                                                         -->
+                        <!-- According to this documentation, the provided dependency processor is not considered!   -->
+                        <annotationProcessorPaths>
+                            <path>
+                                <groupId>org.mapstruct</groupId>
+                                <artifactId>mapstruct-processor</artifactId>
+                                <version>${org.mapstruct.version}</version>
+                            </path>
+                            <path>
+                                <groupId>org.projectlombok</groupId>
+                                <artifactId>lombok</artifactId>
+                                <version>${org.projectlombok.version}</version>
+                            </path>
+                            <path>
+                                <groupId>org.projectlombok</groupId>
+                                <artifactId>lombok-mapstruct-binding</artifactId>
+                                <version>${lombok-mapstruct-binding.version}</version>
+                            </path>
+                        </annotationProcessorPaths>
+                    </configuration>
+                </plugin>
+				
+Let me paste this plugin and let me copy this property from the example.
+So go to properties section over here and here let me copy this org.Lombok.version Property.
+And also let's copy this Lombok MapStruct binding property as well.
+So let me copy these two properties 
+		  <org.projectlombok.version>1.18.30</org.projectlombok.version>
+        <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
+		
+and let me go to our pom.xml file and go to properties section
+and here, let me paste it
+All right.
+Next, let me remove these comments
+and here you can see source and target.
+So instead of using 1.8, let's use version 17
+Perfect.
+Now we are going to use this maven compiler plugin
+It has different annotation processors.
+So next go ahead and click on this load Maven changes over here
+Perfect.
+Now we have added all the MapStruct related are in dependencies to our Spring Boot application.
+
+
+in the plugin xml field we have
+		<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+					
+change the source and target to 17
+
+
+
+
+2nd step is to create DepartmnetMapper using MapStruct
+==============
+
+create mapper.AutoDepartmentMapper interface with @Mapper annotation
+with 2 methods
+
+MapStruct will create implementation for these methods at a compilation time.
+We don't have to write a code to implement these methods. MapStruct will create a code to implement these methods at a compilation time.
+
+
+AutoDepartmentMapper Mapper = Mappers.getMapper(AutoDepartmentMapper.class);
+
+
+So in order to get the implementation for this interface, we can use mappers utility class, for example,
+within this interface, let's define the entry point here.
+So let's call our AutoDepartmentMapper and let's call it as a mapper and then MapStruct provides a Mappers factory
+class.
+It has a getMapper method and just pass AutoDepartmentMapper.class.
+So this will provide the implementation for this interface at compilation time.
+And next, we can use this mapper instance to call these mapping methods.
+So this is the second step.
+
+
+
+Third step is use a AutoDepartmentMapper class in DepartmentServiceImpl class.
+So let's go to our project and go to DepartmentServiceImpl class.
+
+Well, earlier we have used model mapper to convert JPA entity into DTO and vice versa.
+Now instead of using model mapper, let's use MapStruct provided mapper class.
+So within this DepartmentServiceImpl class we have methods.
+So let's refactor these methods one by one to use MapStruct that provided mapper class.
+
+In DepartmentServiceImpl class
+
+1)			/*
+		  //ModelMapper and MapStruct Libraries in notes
+        // this is using ModelMapper class
+
+        DepartmentDto departmentDto = modelMapper.map(department, DepartmentDto.class);
+          */
+
+        //41. Using MapStruct Library
+        DepartmentDto departmentDto = AutoDepartmentMapper.Mapper.maptoDepartmentDto(department);
+
+
+2)  /*
+
+        //ModelMapper and MapStruct Libraries in notes
+        // this is using ModelMapper class
+        DepartmentDto savedDepartmentDto = modelMapper.map(savedDepartment, DepartmentDto.class);
+
+         */
+
+        //41. Using MapStruct Library
+        DepartmentDto savedDepartmentDto = AutoDepartmentMapper.Mapper.maptoDepartmentDto(savedDepartment);
+
+
+
+Exception Handling
+==============================
+So here are the development steps.
+1. create ResourceNotFoundException custom exception.
+2. create an ErrorDetails class which will hold the response that client wants in a standard
+format.
+3. create a GlobalExceptionHandler to handle specific and global exceptions in a single
+place.

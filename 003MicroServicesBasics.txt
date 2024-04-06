@@ -113,7 +113,69 @@ So these are the few challenges of monolith architecture and microservices will 
 of monolithic architecture.
 
 
+1. Each microservice have their own database.
+For example product service has their own database, inventory service has their own database and stock
+service has their own database.
+2. All the microservices are loosely coupled, so loosely coupled meaning all the services in a microservices
+project are independent to each other, and each microservice should be developed independently.
+3. Each microservice should be deployed independently, and each microservice should be scaled independently.
 
+
+4. In microservices project services can communicate with each other.
+For example, product service can communicate with inventory service and inventory service can communicate
+with stock service and product service can communicate with multiple services as well.
+For example, product service can communicate with inventory service as well as stock service well,
+there are two types of communication styles.
+One is synchronous and another is a synchronous.
+In case of synchronous, we can use Http protocol to make a Http request from one microservice to another
+microservice, 
+and in case of asynchronous communication, we have to use a message broker for asynchronous
+communication between multiple micro services.
+For example, we can use RabbitMQ or Apache Kafka as a message broker in order to make asynchronous
+communication between multiple microservices, and each microservice in a microservices project can
+expose a Rest APIs.
+For example, product service can expose Rest APIs, inventory service can expose the Rest APIs,
+and stock service can expose the Rest APIs.
+And here product service can communicate with inventory service.
+It means product service have to call the Rest API of inventory service using Http protocol.
+Each microservice can expose the Rest APIs, and each microservice can call another microservices Rest
+API using Http protocol.
+So this is the synchronous communication.
+And in case of asynchronous communication, the microservices have to use a third party component or
+a message broker for asynchronous communication.
+
+
+Now let's take a look into the key components in a microservices architecture.
+Well the key component is API gateway.
+Well, whenever client sends a request to API gateway and then API gateway will route that the request
+to the relevant microservices.
+ And here the client can be a web application a mobile application or a desktop application.
+ 
+And here one more key component is a service registry.
+Well, all the microservices in our microservice project will register to service registry, and the
+API gateway will discover the particular microservice hostname and port using service registry, so
+that API gateway can route that request to particular microservice.
+
+
+And one more key component is config server.
+So this config server component will basically externalize the configurations of,   microservices.
+
+And one more key component is distributed tracing.
+Well, in order to maintain the logs or complete log hierarchy of a particular Http call, we can use
+distributed tracing.
+ So these are the few key components in a microservices architecture.
+
+microservice architecture enables large teams to build scalable applications that composed
+of loosely coupled services.
+And each microservice have their own database.
+And each microservice expose the Rest APIs.
+And each microservice is loosely coupled and each microservice developed independently, each microservice
+deployed independently, and each microservice scaled independently.
+So these are the important characteristics of each microservice.
+ So this is all about microservices.
+ 
+ https://github.com/RameshMF/springboot-microservices
+ 
 
 74. What is Microservices & How It Solves the Challenges of Monolith Architecture
 ===============================

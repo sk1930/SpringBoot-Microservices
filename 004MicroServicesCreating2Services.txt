@@ -621,8 +621,276 @@ In DepartmentServiceImpl class
 Exception Handling
 ==============================
 So here are the development steps.
-1. create ResourceNotFoundException custom exception.
+1. create and use ResourceNotFoundException custom exception.
 2. create an ErrorDetails class which will hold the response that client wants in a standard
 format.
 3. create a GlobalExceptionHandler to handle specific and global exceptions in a single
 place.
+
+
+
+
+
+create exception package and create ResourceNotFoundException class 
+annotate with @ResponseStatus(value = HttpStatus.NOT_FOUND)
+
+So whenever our SpringBoot application through this ResourceNotFoundException then springboot
+default error handling will catch this exception and it will create a default error response.
+And within that response it will add a status as a 404 and error, as not found, and it will send
+that default error response back to the client.
+
+
+In DepartmentRepository, there is a method called findDepartmentByCode. This doesn't return Optional. So I cannot use orThrowException(). How do I capture the exception there ?
+
+In DepartmentRepository In place of 
+    Department findByDepartmentCode(String departmentCode);
+
+You can use the Optional as a return type:
+
+Optional<Department> findDepartmentByCode(String departmentCode);
+
+
+you can use:
+In DepartmentRepository if u use 
+    Department findByDepartmentCode(String departmentCode);
+In DepartmentServiceImpl you can use 
+if (department == null) {
+    throw new ResourceNotFoundException("Department", "code", departmentCode);
+	
+	
+or option 2 :
+In DepartmentRepository if u use 
+    Optional<Department> findByDepartmentCode(String departmentCode);
+In DepartmentServiceImpl you can use
+
+ Department department = departmentRepository.findByDepartmentCode(departmentCode).orElseThrow(
+                ()->new ReadOnlyFileSystemException("department","code",departmentCode);
+        );
+findByDepartmentCode returns optional<Department>,
+but orElseThrow returns Department object
+
+test
+Request:
+
+curl --location 'http://localhost:8090/api/departments/depcode4'
+
+result: {
+    "timestamp": "2024-04-06T18:43:08.136+00:00",
+    "status": 404,
+    "error": "Not Found",
+    "path": "/api/departments/depcode4"
+}
+
+
+Well, notice here we haven't yet written a code to handle the exceptions.
+In our springboot application.
+We are still using springboot default error handling.
+Just we have created a custom exception and we have used that custom exception.
+And whenever springboot application, throw that custom exception, then springboot default
+error handling will catch that exception and it will create a default error response and it will send
+that default error response back to the client in this format.
+{
+    "timestamp": "2024-04-06T18:43:08.136+00:00",
+    "status": 404,
+    "error": "Not Found",
+    "path": "/api/departments/depcode4"
+}
+
+Now, this default error response looks good, but we can improve this error response even better by
+implementing exceptions handling in springboot application.
+For example, our requirements says like the client should expect the custom error response in this
+format like timestamp message, path and error code.
+{
+    "timestamp": "2024-04-06T18:43:08.136+00:00",
+    "message": "department not found with code :depcode",
+    "errorCode": "DEP_NOT_FOUND",
+    "path": "/api/departments/depcode4"
+}
+
+All right, in next lecture we'll create our own global exception handler to handle specific exception
+as well as global exception in a single place.
+So instead of using springboot default, error handling, we are going to write our own code to handle
+the exception and we'll create our own custom error response in this format and will send that error
+response back to the client.
+
+
+48. Handing Specific Custom Exception - ResourceNotFoundException
+===============================
+
+2. create an ErrorDetails class which will hold the response that client wants in a standard
+format.
+3. create a GlobalExceptionHandler to handle specific and global exceptions in a single
+place.
+
+2nd step :
+create exception.ErrorDetails class
+
+
+3rd step :
+
+we need to create global exception handler class to handle specific and global exceptions.
+Well, we can also handle the specific exceptions as per the controller class, for example.
+If you go to Department controller, well, we can write the logic to handle the specific exceptions With respect to the controllers.
+So let me show you how to handle the specific exceptions with respect to a controller.
+Goto DepartmentController.java
+
+
+lets give return type of the method as ResponseEntity<ErrorDetails> 
+and method name as ResourceNotFoundException.
+Annotate with ExceptionHandler(ResourceNotFoundException.class)
+
+Next, we need to pass two parameters to this method.
+exception that we want to handle,
+Second parameter is the WebRequest.
+Well, we need to get some details from the web request.
+That's why we're going to pass a web request as a parameter.
+And second parameter is web request.
+
+Next, within this method, let's create an instance of error details class.
+And then third value we need to pass as a path so we can get a path from webRequest.getDescription
+And  getDescription method takes a boolean as a parameter.
+So it says like include client information.
+If we pass True to this get description method, then it will include all the client information.
+And if we pass false, then it won't include the client information.
+So we don't want client information, so we have to pass false as a value to this get description.
+
+Next, let's return this object.
+It returns error details along with HTTP status not found.
+
+So basically we use an exception handler annotation to handle specific exception and return the custom
+error response back to the client.
+
+Test:
+
+Request:
+curl --location 'http://localhost:8090/api/departments/depcode4'
+
+Response:
+{
+    "timestamp": "2024-04-07T19:22:20.9804328",
+    "message": "department not found with code: depcode4",
+    "path": "uri=/api/departments/depcode4",
+    "errorCode": "DEPARTMENT_NOT_FOUND"
+}
+
+
+
+so we have written this exception handling logic with
+respect to Department controller.
+
+Okay, Now let's go ahead and let's create one global exception handler class and we'll keep move this logic
+to a global exception Handler class.
+
+
+
+
+
+create a class
+exception.GlobalExceptionHandler class
+and
+use @ControllerAdvice annotation to handle exceptions globally.
+
+
+
+Well, we use @ExceptionHandler annotation at method level to handle the specific exception and return the custome
+response back to the client.
+And we use @ControllerAdvice annotation at class level to handle the exception globally.
+
+Comment the handleResourceNotFoundException in DepartmentController and move the code to GlobalExceptionHandler class.
+
+Test:
+Request:
+curl --location 'http://localhost:8090/api/departments/depcode4'
+
+Response: status 404, Not Found
+{
+    "timestamp": "2024-04-07T20:46:23.5450845",
+    "message": "department not found with code: depcode4",
+    "path": "uri=/api/departments/depcode4",
+    "errorCode": "DEPARTMENT_NOT_FOUND"
+}
+
+It means that we have successfully written a logic to handle a resource not found custom specific exception
+in a GlobalExceptionHandler.
+
+
+49. Handing Specific Custom Exception - DepartmentCodeAlreadyExistsException
+==========================
+
+create exception.DepartmentCodeAlreadyExistsException class
+
+create Spring Data JPA custom query method in DepartmentRepository to retrieve departments by depCode
+findByDepartmentCode
+
+
+Now in DepartmentServiceImpl.java
+in saveDepartment method add code to throw the exception if depCode already exists
+
+In GlobalExceptionHandler create handleDepartmentAlreadyExistsException method 
+
+Request:
+curl --location 'http://localhost:8090/api/departments/create' \
+--header 'Content-Type: application/json' \
+--data '{
+    "departmentName" : "dep3",
+    "departmentDescription" : "department description 3",
+    "departmentCode" : "depCode3"
+}'
+
+Response:
+{
+    "timestamp": "2024-04-07T23:11:29.8356948",
+    "message": "department already exists with given Code depCode3",
+    "path": "uri=/api/departments/create",
+    "errorCode": "DEPARTMENT_CODE_ALREADY_EXISTS"
+}
+
+
+50. Spring Boot REST API Global Exception Handling
+=============================
+we have seen how to handle a specific exceptions in a global exception handler.
+Now we will handle a global exception.
+.
+In our SpringBoot application, we have  two custom exceptions. ResourceNotFoundException, DepartmentCodeAlreadyExistsException
+
+we have already written a logic to handle
+these two specific exceptions.
+But our SpringBoot application may throw different kind of exceptions as well.
+All right, so apart from these two exceptions, we need to also handle all other kind of exceptions
+as well.
+So in order to do that, we have to handle the exception class.
+exception class is a super class for all the checked and unchecked exceptions.
+let's handle this exception in a global exception handler class.
+
+Well, this exception class is a super class for all the nine unchecked exceptions, and if our SpringBoot
+application throws different exceptions apart from these two specific exceptions, then that exceptions
+will be handled over here.
+
+see the class exception.GlobalExceptionHandler
+   public ResponseEntity<ErrorDetails> handleException(Exception exception, WebRequest webRequest) {
+   
+   
+TEST:
+
+
+Request without body {
+    "departmentName" : "dep3",
+    "departmentDescription" : "department description 3",
+    "departmentCode" : "depCode3"
+}
+
+
+
+Request is :
+curl --location --request POST 'http://localhost:8090/api/departments/create' \
+--data ''
+
+Response:
+{
+    "timestamp": "2024-04-08T10:40:25.6524792",
+    "message": "Required request body is missing: public org.springframework.http.ResponseEntity<sk.microservices.departmentservice.dto.DepartmentDto> sk.microservices.departmentservice.controller.DepartmentController.saveDepartmennt(sk.microservices.departmentservice.dto.DepartmentDto)",
+    "path": "uri=/api/departments/create",
+    "errorCode": "INTERNAL SERVER ERROR"
+}
+
+

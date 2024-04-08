@@ -9,9 +9,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 import sk.microservices.departmentservice.dto.DepartmentDto;
 import sk.microservices.departmentservice.entity.Department;
+import sk.microservices.departmentservice.exception.ErrorDetails;
+import sk.microservices.departmentservice.exception.ResourceNotFoundException;
 import sk.microservices.departmentservice.service.DepartmentService;
+
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("api/departments")
@@ -73,6 +78,32 @@ Response:
         DepartmentDto departmentDto = departmentService.getDepartmentByCode(departmentCode);
         return  new ResponseEntity<>(departmentDto, HttpStatus.OK);
     }
+
+
+    /* commented this and used this code to handle exceptions globally
+
+    //48. Handing Specific Custom Exception - ResourceNotFoundException
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorDetails> handleResourceNotFoundException(ResourceNotFoundException exception,
+                                                                        WebRequest webRequest){
+        ErrorDetails errorDetails = new ErrorDetails(
+                LocalDateTime.now(),
+                exception.getMessage(),
+                webRequest.getDescription(false),
+                "DEPARTMENT_NOT_FOUND"
+        );
+
+        return  new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+
+
+
+    }
+
+     */
+
+
+
+
 
 
 }

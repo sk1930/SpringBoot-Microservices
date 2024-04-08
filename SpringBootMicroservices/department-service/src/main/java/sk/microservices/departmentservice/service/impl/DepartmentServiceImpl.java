@@ -5,9 +5,15 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import sk.microservices.departmentservice.dto.DepartmentDto;
 import sk.microservices.departmentservice.entity.Department;
+import sk.microservices.departmentservice.exception.DepartmentCodeAlreadyExistsException;
+import sk.microservices.departmentservice.exception.ResourceNotFoundException;
 import sk.microservices.departmentservice.mapper.AutoDepartmentMapper;
 import sk.microservices.departmentservice.repository.DepartmentRepository;
 import sk.microservices.departmentservice.service.DepartmentService;
+
+import javax.swing.text.html.Option;
+import java.nio.file.ReadOnlyFileSystemException;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -43,6 +49,17 @@ then we can omit using @Autowired annotation.*/
                 commented these lines to use modelMapper
          */
         Department department = modelMapper.map(departmentDto,Department.class);
+
+        //49. Handing Specific Custom Exception - DepartmentCodeAlreadyExistsException
+        Optional<Department> optionalDepartment = departmentRepository.findByDepartmentCode(departmentDto.getDepartmentCode());
+        if(optionalDepartment.isPresent()){
+            throw new DepartmentCodeAlreadyExistsException(String.format("department already exists with given Code %s",departmentDto.getDepartmentCode()));
+
+
+        }
+
+
+
         Department savedDepartment = departmentRepository.save(department);
 
 
@@ -72,7 +89,15 @@ then we can omit using @Autowired annotation.*/
 
     //88. DepartmentService - Build Get Department REST API
     public DepartmentDto getDepartmentByCode(String departmentCode){
-        Department department = departmentRepository.findByDepartmentCode(departmentCode);
+        /*Department department = departmentRepository.findByDepartmentCode(departmentCode);
+        For Exception handling modified above
+        Exception Handling in notes
+         */
+        Department department = departmentRepository.findByDepartmentCode(departmentCode).orElseThrow(
+                ()->new ResourceNotFoundException("department","code",departmentCode)
+        );
+
+
 
         /*
         DepartmentDto departmentDto = new DepartmentDto(

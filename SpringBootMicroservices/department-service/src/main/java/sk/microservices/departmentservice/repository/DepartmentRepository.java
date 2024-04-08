@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import sk.microservices.departmentservice.dto.DepartmentDto;
 import sk.microservices.departmentservice.entity.Department;
 
+import java.util.Optional;
 import java.util.UUID;
 /*86. DepartmentService - Create Department JPA Entity and Spring Data JPA Repository
  */
@@ -19,5 +20,13 @@ public interface DepartmentRepository extends JpaRepository<Department, UUID> {
 	pass a parameter as a departmentCode
      */
     //88. DepartmentService - Build Get Department REST API
-    Department findByDepartmentCode(String departmentCode);
+    /*Department findByDepartmentCode(String departmentCode);
+
+    Commented above for Exception Handling
+     */
+
+
+    Optional<Department> findByDepartmentCode(String departmentCode);
+
+
 }

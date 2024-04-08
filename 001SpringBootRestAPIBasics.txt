@@ -1,7 +1,6 @@
-Learn to Build Microservices using Spring Boot 3, Spring Cloud, React, Kafka, RabbitMQ, REST API, Docker & IntelliJ IDEA
+The project is springboot-rest-api
 
-
-SpringBoot Rest API development basics
+Section 2 : SpringBoot Rest API development basics
 ========================
 
 1. Create a simple spring boot rest API using a @RestController and @GetMapping annotations.
@@ -624,3 +623,20 @@ change     @GetMapping("students")
  @GetMapping("student") which was accessible at     //http:localhost:8090/student
 will be accessible at     //http:localhost:8090/students/student
 
+
+
+Quiz:
+========================
+***********
+
+The @SpringBootApplication annotation is the main annotation used to define a Spring Boot application. It combines several annotations, including @Configuration, @EnableAutoConfiguration, and @ComponentScan.
+
+The @RestController annotation is used to indicate a class that handles RESTful requests in Spring Boot. It combines the @Controller and @ResponseBody annotations, making it convenient for building REST APIs.
+
+The @PathVariable annotation is used in Spring Boot to retrieve path parameters from a RESTful API request. It allows you to extract variables from the URI path and use them in your controller method.
+
+@RequestParam annotation is used to retrieve query parameters from the RESTful API request URL.
+
+The @RequestBody annotation is used to bind HTTP request bodies to method parameters in Spring MVC. It allows you to extract the request body content, such as JSON or XML, and map it to a Java object.
+
+@RequestMapping annotation is used on class level to define a base URL for all the REST APIs in a Controller class?
